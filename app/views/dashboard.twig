@@ -1,0 +1,45 @@
+{% extends "layout.twig" %}
+
+{% block scripts %}
+	<script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<script defer src="/javascripts/dashboard.js"></script>
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+		<div class="card mb-3">
+			<h1 class="card-header text-center">Dashboard</h1>
+			<div class="card-body">
+				<div class="row">
+
+					<div class="btn-group col-md-6">
+						<button id="btn-start" class="btn btn-success btn-lg">Start a new sequence</button>
+						<button id="btn-reset" class="btn btn-warning btn-lg" hidden>Reset all</button>
+						<button id="btn-stop" class="btn btn-danger btn-lg disabled">Stop the sequence</button>
+					</div>
+
+					<div class="col-md-6">
+						<p>
+							Latest sequence :
+							<span id="current-sequence-id">...</span>
+							<br>
+							<span class="badge bg-warning" id="badge-database">Database disconnected</span>
+						</p>
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="card-body">
+			<button class="btn btn-info" onclick="randomSequence()">Random</button>
+			<canvas id="myChart"></canvas>
+		</div>
+		<div class="card-footer text-muted">
+			Graphic of the latest sequence
+			<br>
+			Started at :
+			<span id="started-time"></span>
+		</div>
+	</div>
+</div>{% endblock %}

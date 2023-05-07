@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>{{ title }}</title>
+
+		{# SCRIPTS HERE #}
+		<script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+		<script defer src="https://bootswatch.com/_vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+		{# PAGE BY PAGE SCRIPTS #}
+		{% block scripts %}{% endblock %}
+
+		{# STYLE SHEETS #}
+		<link rel='stylesheet' href='/stylesheets/style.css'/>
+		<link rel="stylesheet" href="https://bootswatch.com/5/zephyr/bootstrap.min.css">
+
+	</head>
+	<body
+		class="bg-light">
+		{# START OF THE PAGE #}
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="/">Project 2</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarColor02">
+					<ul class="navbar-nav me-auto">
+						<li class="nav-item">
+							<a class="nav-link" href="/dashboard">Dashboard</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/history">History</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/about">More infos</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		{# MAIN CONTENT HERE #}
+		<main>
+			{% block body %}{% endblock %}
+		</main>
+
+		{# END OF THE PAGE #}
+		<footer class="bg-dark text-center text-secondary mt-4">
+			<div class="container-fluid text-center p-3">
+				Project made by
+				<strong>Ali DERELI</strong>,
+				<strong>Léandre KARASSAVAS</strong>
+				and
+				<strong>Jérôme SARTIAUX</strong>
+				<span class="text-muted">
+					-
+				</span>
+				<strong>HELHa</strong>
+				<span class="text-muted">
+					-
+				</span>
+				&copy; 2023
+			</div>
+		</footer>
+	</body>
+</html>

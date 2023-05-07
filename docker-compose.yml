@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  express:
+    image: node:20-alpine
+    working_dir: /home/node/app
+    volumes:
+      - ./app:/home/node/app
+    ports:
+      - 3000:3000
+    command: npm start
+
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=project2
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  pma:
+    image: phpmyadmin
+    ports:
+      - 8080:80
+
+volumes:
+  dbdata:
