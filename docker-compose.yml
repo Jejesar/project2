@@ -7,7 +7,7 @@ services:
       - ./app:/home/node/app
     ports:
       - 3000:3000
-    command: npm start
+    command: npm run dev
 
   db:
     image: mysql:5.7
