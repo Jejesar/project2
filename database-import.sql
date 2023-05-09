@@ -36,7 +36,7 @@ CREATE TABLE `currentSequence` (
 --
 
 INSERT INTO `currentSequence` (`idSequence`) VALUES
-(35);
+(NULL);
 
 -- --------------------------------------------------------
 
