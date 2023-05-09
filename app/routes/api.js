@@ -10,7 +10,7 @@ const parser = port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
 
 var oldArduinoData;
 var measuredType;
-parser.on("data", (data) => {
+parser.on("data", async (data) => {
   if (oldArduinoData != data) {
     oldArduinoData = data;
 
@@ -19,9 +19,11 @@ parser.on("data", (data) => {
 
       measuredType = data.split(`"`)[1];
 
-      var currentSequence = db.query("SELECT idSequence FROM currentSequence");
+      var [currentSequence] = await db.query(
+        "SELECT idSequence FROM currentSequence"
+      );
 
-      if (currentSequence) {
+      if (currentSequence[0].idSequence) {
         db.query(
           `UPDATE listSequences
           JOIN (SELECT MAX(idSequence) AS maxID FROM listSequences) AS list2
@@ -31,7 +33,12 @@ parser.on("data", (data) => {
         );
       }
 
-      console.log(measuredType);
+      console.log(
+        "Current sequence : " +
+          currentSequence[0].idSequence +
+          "\tType : " +
+          measuredType
+      );
     } else if (data.toLowerCase().startsWith("reset")) {
       // Message expected : `RESET`
 
@@ -49,31 +56,37 @@ router.get("", async (req, res, next) => {
 });
 
 router.get("/get", async (req, res, next) => {
-  var currentSequenceID;
+  var currentSequenceID, dataSequence;
 
   try {
     await db.ping();
     dbConnection = true;
-
-    var [currentSequenceID] = await db.query(
-      `SELECT idSequence as id FROM currentSequence`
-    );
-
-    // console.log(currentSequenceID);
   } catch (error) {
     dbConnection = false;
   }
 
+  try {
+    var [currentSequenceID] = await db.query(
+      `SELECT idSequence as id FROM currentSequence`
+    );
+
+    if (currentSequenceID) {
+      var [dataSequence] = await db.query(
+        `SELECT * FROM listSequences WHERE idSequence=?`,
+        currentSequenceID[0].id
+      );
+    }
+  } catch (error) {}
+
   res.json({
     currentSequenceID: currentSequenceID[0].id,
     dbConnection: dbConnection,
+    dataSequence: dataSequence,
   });
 });
 
 router.get("/get/all", async (req, res, next) => {
-  var [allSequences] = await db.query(
-    "SELECT listSequences.idSequence, name, comment, measure1, measure2, measure3, measure4, createdTimestamp FROM listSequences"
-  );
+  var [allSequences] = await db.query("SELECT * FROM listSequences");
 
   res.json(allSequences);
 });
@@ -88,7 +101,7 @@ router.get("/get/last", async (req, res, next) => {
 
 router.get("/get/:id", async (req, res, next) => {
   var [selectedSequences] = await db.query(
-    "SELECT listSequences.idSequence, name, comment, measure1, measure2, measure3, measure4, createdTimestamp FROM listSequences JOIN currentSequence ON currentSequence.idSequence = listSequences.idSequence WHERE listSequences.idSequence = ?",
+    "SELECT * FROM listSequences JOIN currentSequence ON currentSequence.idSequence = listSequences.idSequence WHERE listSequences.idSequence = ?",
     req.params.id
   );
   res.json(selectedSequences[0]);
@@ -119,10 +132,20 @@ router.post("/edit/:id", async (req, res, next) => {
 
 router.post("/insert/:type", async (req, res, next) => {
   var measure = req.params.type;
+  var [currentSequence] = await db.query(
+    "SELECT idSequence FROM currentSequence"
+  );
 
-  db.query("UPDATE listSequences SET measure? = measure? + 1", Number(measure));
+  if (currentSequence[0]) {
+    db.query(
+      "UPDATE listSequences SET measure? = measure? + 1",
+      Number(measure)
+    );
 
-  res.json("OK");
+    res.json("OK");
+  } else {
+    res.status(404).json("Sequence not found");
+  }
 });
 
 router.post("/select/last", async (req, res, next) => {
@@ -134,6 +157,11 @@ router.post("/select/last", async (req, res, next) => {
 
 router.post("/stop", async (req, res, next) => {
   await db.query(`UPDATE currentSequence SET idSequence=NULL;`);
+  res.json("OK");
+});
+
+router.delete("/delete/:id", async (req, res, next) => {
+  await db.query(`DELETE FROM listSequences WHERE idSequence=?`, req.params.id);
   res.json("OK");
 });
 

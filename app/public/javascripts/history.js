@@ -15,7 +15,7 @@ setInterval(() => {
 }, 5000);
 
 const checkHistory = async () => {
-  $.ajax({
+  await $.ajax({
     type: "get",
     url: "/api/get/all",
     success: (res) => {
@@ -91,6 +91,10 @@ const renderTable = () => {
     measure4.innerText = row.measure4;
     currentRow.appendChild(measure4);
 
+    var measure5 = document.createElement("td");
+    measure5.innerText = row.measure5;
+    currentRow.appendChild(measure5);
+
     var comment = document.createElement("td");
     comment.innerText = row.comment;
     currentRow.appendChild(comment);
@@ -109,4 +113,18 @@ const renderTable = () => {
     $(tableList).prepend(currentRow); // Rerversed .append
   });
   // $(tableList).html(rowHTML);
+};
+
+const del = async (id) => {
+  $.ajax({
+    type: "DELETE",
+    url: `/api/delete/${id}`,
+    success: () => {
+      rows = [];
+      $(tableList).empty();
+    },
+  });
+
+  await checkHistory();
+  renderTable();
 };
