@@ -12,26 +12,26 @@ const btnStartLast = document.getElementById("btn-start-last");
 const btnStop = document.getElementById("btn-stop");
 
 var data = {
-  labels: ["0cm", "1cm", "2cm", "3cm", "4cm", "5cm", "6cm"],
+  labels: ["Measure 1", "Measure 2", "Measure 3", "Measure 4", "Measure 5"],
   datasets: [
     {
       label: "Waiting to start...",
-      data: [0, 0, 0, 0, 0, 0, 0],
+      data: [0, 0, 0, 0, 0],
       backgroundColor: [
         "rgba(255, 118, 117,0.2)",
-        "rgba(250, 177, 160,0.2)",
+        // "rgba(250, 177, 160,0.2)",
         "rgba(255, 234, 167,0.2)",
         "rgba(85, 239, 196,0.2)",
-        "rgba(129, 236, 236,0.2)",
+        // "rgba(129, 236, 236,0.2)",
         "rgba(116, 185, 255,0.2)",
         "rgba(162, 155, 254,0.2)",
       ],
       borderColor: [
         "rgba(255, 118, 117,1.0)",
-        "rgba(250, 177, 160,1.0)",
+        // "rgba(250, 177, 160,1.0)",
         "rgba(255, 234, 167,1.0)",
         "rgba(85, 239, 196,1.0)",
-        "rgba(129, 236, 236,1.0)",
+        // "rgba(129, 236, 236,1.0)",
         "rgba(116, 185, 255,1.0)",
         "rgba(162, 155, 254,1.0)",
       ],
