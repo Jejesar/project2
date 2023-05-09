@@ -93,7 +93,7 @@ setInterval(() => {
     url: "/api/get",
     dataType: "JSON",
     success: (res) => {
-      if (res.dataSequence[0]) {
+      if (res.dataSequence && res.dataSequence[0]) {
         data.datasets[0].data[0] = res.dataSequence[0].measure1;
         data.datasets[0].data[1] = res.dataSequence[0].measure2;
         data.datasets[0].data[2] = res.dataSequence[0].measure3;
