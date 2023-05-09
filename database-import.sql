@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : db
--- Généré le : mar. 09 mai 2023 à 23:16
+-- Généré le : mar. 09 mai 2023 à 23:19
 -- Version du serveur : 5.7.42
 -- Version de PHP : 8.1.16
 
@@ -30,6 +30,13 @@ SET time_zone = "+00:00";
 CREATE TABLE `currentSequence` (
   `idSequence` int(10) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `currentSequence`
+--
+
+INSERT INTO `currentSequence` (`idSequence`) VALUES
+(35);
 
 -- --------------------------------------------------------
 
