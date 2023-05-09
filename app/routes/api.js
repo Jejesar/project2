@@ -69,7 +69,9 @@ router.get("/get", async (req, res, next) => {
     var [currentSequenceID] = await db.query(
       `SELECT idSequence as id FROM currentSequence`
     );
+  } catch (error) {}
 
+  try {
     if (currentSequenceID) {
       var [dataSequence] = await db.query(
         `SELECT * FROM listSequences WHERE idSequence=?`,
