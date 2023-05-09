@@ -3,8 +3,12 @@ const ctx = document.getElementById("myChart");
 const badgeDatabase = document.getElementById("badge-database");
 const txtCurrentSequence = document.getElementById("current-sequence-id");
 const txtStartedTime = document.getElementById("started-time");
+const txtLastSequence = document.getElementById("last-sequence");
+const divLastSequence = document.getElementById("last-sequence-footer");
 
 const btnStart = document.getElementById("btn-start");
+const btnStartNew = document.getElementById("btn-start-new");
+const btnStartLast = document.getElementById("btn-start-last");
 const btnStop = document.getElementById("btn-stop");
 
 var data = {
@@ -77,7 +81,7 @@ const randomSequence = () => {
 
 //   $.ajax({
 //     type: "post",
-//     url: "/dashboard/api/edit/2",
+//     url: "/api/edit/2",
 //     data: { test: "test", info: info },
 //     dataType: "JSON",
 //     success: (res) => {},
@@ -87,8 +91,8 @@ const randomSequence = () => {
 setInterval(() => {
   $.ajax({
     type: "GET",
-    url: "/dashboard/api/get/current",
-    dataType: "json",
+    url: "/api/get",
+    dataType: "JSON",
     success: (res) => {
       myChart.update();
 
@@ -104,15 +108,46 @@ setInterval(() => {
 
       if (res.currentSequenceID) {
         $(txtCurrentSequence).text(res.currentSequenceID);
-        $(txtStartedTime).text(new Date(res.startedTimestamp).toLocaleString());
+        $(btnStart).addClass("disabled");
+        $(btnStop).removeClass("disabled");
+        $(divLastSequence).removeAttr("hidden");
       } else {
         $(txtCurrentSequence).text("...");
-        $(txtStartedTime).text("...");
+        $(btnStart).removeClass("disabled");
+        $(btnStop).addClass("disabled");
+        $(divLastSequence).attr("hidden", "");
       }
+    },
+  });
+
+  $.ajax({
+    type: "GET",
+    url: "/api/get/last",
+    dataType: "JSON",
+    success: (res) => {
+      $(txtLastSequence).text(res.idSequence);
+      $(txtStartedTime).text(new Date(res.createdTimestamp).toLocaleString());
     },
   });
 }, 1000);
 
-$(btnStart).click((e) => {
-  console.log("Click");
+$(btnStartNew).click((e) => {
+  $.ajax({
+    type: "POST",
+    url: "/api/create",
+  });
+});
+
+$(btnStartLast).click((e) => {
+  $.ajax({
+    type: "POST",
+    url: "/api/select/last",
+  });
+});
+
+$(btnStop).click((e) => {
+  $.ajax({
+    type: "POST",
+    url: "/api/stop",
+  });
 });

@@ -14,10 +14,17 @@
 			<div class="card-body">
 				<div class="row">
 
-					<div class="btn-group col-md-6">
-						<button id="btn-start" class="btn btn-success btn-lg">Start a new sequence</button>
-						<button id="btn-reset" class="btn btn-warning btn-lg" hidden>Reset all</button>
-						<button id="btn-stop" class="btn btn-danger btn-lg disabled">Stop the sequence</button>
+					<div
+						class="col-md-6">
+						{# <button id="btn-start" class="btn btn-success btn-lg">Start a new sequence</button> #}
+						<button class="btn btn-success btn-lg dropdown-toggle disabled mb-1" id="btn-start" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Start menu</button>
+						<div class="dropdown-menu">
+							<button class="dropdown-item" id="btn-start-new">Start new sequence</button>
+							<button class="dropdown-item" id="btn-start-last">Select last sequence
+								<i class="text-muted">(N°<span id="last-sequence">...</span>)</i>
+							</button>
+						</div>
+						<button id="btn-stop" class="btn btn-danger btn-lg disabled mb-1">Stop the sequence</button>
 					</div>
 
 					<div class="col-md-6">
@@ -25,7 +32,7 @@
 							Latest sequence :
 							<span id="current-sequence-id">...</span>
 							<br>
-							<span class="badge bg-warning" id="badge-database">Database disconnected</span>
+							<span class="badge bg-warning" id="badge-database">Database connecting...</span>
 						</p>
 					</p>
 				</div>
@@ -35,7 +42,7 @@
 			<button class="btn btn-info" onclick="randomSequence()">Random</button>
 			<canvas id="myChart"></canvas>
 		</div>
-		<div class="card-footer text-muted">
+		<div class="card-footer text-muted" hidden id="last-sequence-footer">
 			Graphic of the latest sequence
 			<br>
 			Started at :

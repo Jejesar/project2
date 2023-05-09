@@ -17,7 +17,7 @@ setInterval(() => {
 const checkHistory = async () => {
   $.ajax({
     type: "get",
-    url: "http://localhost:3000/dashboard/api/get/all",
+    url: "/api/get/all",
     success: (res) => {
       // console.log(res);
       rows = res;
@@ -27,16 +27,41 @@ const checkHistory = async () => {
 
 $.ajax({
   type: "get",
-  url: "http://localhost:3000/dashboard/api/get/all",
+  url: "/api/get/all",
   success: (res) => {
     // console.log(res);
     rows = res;
   },
 }).then(() => renderTable());
 
-const renderTable = async () => {
-  rows.forEach(async (row) => {
+const renderTable = () => {
+  var rowHTML = "";
+  rows.forEach((row) => {
+    // console.log(row);
     var currentRow = document.createElement("tr");
+
+    // rowHTML += `<tr>
+    //   <td>${row.idSequence}</td>
+    //   <td>${row.name}</td>
+    //   <td>${new Date(row.createdTimestamp).toLocaleString()}</td>
+    //   <td>${row.measure1}</td>
+    //   <td>${row.measure2}</td>
+    //   <td>${row.measure3}</td>
+    //   <td>${row.measure4}</td>
+    //   <td>${row.comment}</td>
+    //   <td>
+    //     <button onclick="edit(${
+    //       row.idSequence
+    //     })" class="btn btn-dark btn-sm bg-dark text-white mx-1 my-1">
+    //       <i class="fa fa-pencil" aria-hidden="true"></i>
+    //     </button>
+    //     <button onclick="del(${
+    //       row.idSequence
+    //     })" class="btn btn-dark btn-sm bg-dark text-white mx-1 my-1">
+    //       <i class="fa fa-trash" aria-hidden="true"></i>
+    //     </button>
+    //   </td>
+    // </tr>`;
 
     var idSequence = document.createElement("td");
     idSequence.innerText = row.idSequence;
@@ -50,59 +75,38 @@ const renderTable = async () => {
     createdAt.innerText = new Date(row.createdTimestamp).toLocaleString();
     currentRow.appendChild(createdAt);
 
-    var cm0 = document.createElement("td");
-    cm0.innerText = row.cm0;
-    currentRow.appendChild(cm0);
+    var measure1 = document.createElement("td");
+    measure1.innerText = row.measure1;
+    currentRow.appendChild(measure1);
 
-    var cm2 = document.createElement("td");
-    cm2.innerText = row.cm2;
-    currentRow.appendChild(cm2);
+    var measure2 = document.createElement("td");
+    measure2.innerText = row.measure2;
+    currentRow.appendChild(measure2);
 
-    var cm4 = document.createElement("td");
-    cm4.innerText = row.cm4;
-    currentRow.appendChild(cm4);
+    var measure3 = document.createElement("td");
+    measure3.innerText = row.measure3;
+    currentRow.appendChild(measure3);
 
-    var cm6 = document.createElement("td");
-    cm6.innerText = row.cm6;
-    currentRow.appendChild(cm6);
+    var measure4 = document.createElement("td");
+    measure4.innerText = row.measure4;
+    currentRow.appendChild(measure4);
 
     var comment = document.createElement("td");
     comment.innerText = row.comment;
     currentRow.appendChild(comment);
 
     var btnCol = document.createElement("td");
-    var btnEdit = document.createElement("button");
-    $(btnEdit).attr("type", "button");
-    $(btnEdit).attr("onclick", `edit(${row.idSequence})`);
-    $(btnEdit).html(`<i class="fa fa-pencil" aria-hidden="true"></i>`);
-    btnEdit.classList.add(
-      "btn",
-      "btn-dark",
-      "btn-sm",
-      "bg-dark",
-      "text-white",
-      "mx-1",
-      "my-1"
-    );
-    btnCol.appendChild(btnEdit);
-
-    var btnDel = document.createElement("button");
-    $(btnDel).attr("type", "button");
-    $(btnDel).attr("onclick", `del(${row.idSequence})`);
-    $(btnDel).html(`<i class="fa fa-trash" aria-hidden="true"></i>`);
-    btnDel.classList.add(
-      "btn",
-      "btn-dark",
-      "btn-sm",
-      "bg-dark",
-      "text-white",
-      "mx-1",
-      "my-1"
-    );
-    btnCol.appendChild(btnDel);
-
+    $(btnCol).html(`
+    <button onclick="edit(${row.idSequence})" class="btn btn-dark btn-sm bg-dark text-white mx-1 my-1">
+      <i class="fa fa-pencil" aria-hidden="true"></i>
+    </button>
+    <button onclick="del(${row.idSequence})" class="btn btn-dark btn-sm bg-dark text-white mx-1 my-1">
+      <i class="fa fa-trash" aria-hidden="true"></i>
+    </button>
+    `);
     currentRow.appendChild(btnCol);
 
-    $(tableList).append(currentRow);
+    $(tableList).prepend(currentRow); // Rerversed .append
   });
+  // $(tableList).html(rowHTML);
 };

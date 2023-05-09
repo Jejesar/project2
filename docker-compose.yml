@@ -8,6 +8,8 @@ services:
     ports:
       - 3000:3000
     command: npm run dev
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
 
   db:
     image: mysql:5.7
