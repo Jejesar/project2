@@ -70,7 +70,6 @@ const randomSequence = () => {
   }
 
   data.datasets[0].data = [...random];
-  uploadRandom(data.datasets[0].data);
 };
 
 // const uploadRandom = (random) => {
@@ -94,6 +93,15 @@ setInterval(() => {
     url: "/api/get",
     dataType: "JSON",
     success: (res) => {
+      if (res.dataSequence) {
+        data.datasets[0].data[0] = res.dataSequence[0].measure1;
+        data.datasets[0].data[1] = res.dataSequence[0].measure2;
+        data.datasets[0].data[2] = res.dataSequence[0].measure3;
+        data.datasets[0].data[3] = res.dataSequence[0].measure4;
+      } else {
+        data.datasets[0].data = [0, 0, 0, 0];
+      }
+
       myChart.update();
 
       if (res.dbConnection === true) {
