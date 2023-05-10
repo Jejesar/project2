@@ -1,18 +1,19 @@
 version: "3.8"
 services:
-  express:
-    image: node:20-alpine
-    working_dir: /home/node/app
-    volumes:
-      - ./app:/home/node/app
-    ports:
-      - 3000:3000
-    command: npm run dev
-    devices:
-      - /dev/ttyACM0:/dev/ttyACM0
+  # express:
+  #   image: balenalib/raspberry-pi-alpine-node:18.11.0-3.15
+  #   working_dir: /home/node/app
+  #   volumes:
+  #     - ./app:/home/node/app
+  #   ports:
+  #     - 3000:3000
+  #   command: npm run dev
+  #   devices:
+  #     - /dev/ttyACM0:/dev/ttyACM0
 
   db:
-    image: mysql:5.7
+    image: hypriot/rpi-mysql
+    restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=project2
@@ -23,6 +24,7 @@ services:
 
   pma:
     image: phpmyadmin
+    restart: unless-stopped
     ports:
       - 8080:80
 
