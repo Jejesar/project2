@@ -49,6 +49,7 @@ CREATE TABLE `listSequences` (
   `createdTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `name` varchar(64) DEFAULT NULL,
   `comment` varchar(128) DEFAULT NULL,
+  `measure0` int(11) NOT NULL DEFAULT '0',
   `measure1` int(11) NOT NULL DEFAULT '0',
   `measure2` int(11) NOT NULL DEFAULT '0',
   `measure3` int(11) NOT NULL DEFAULT '0',

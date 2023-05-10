@@ -12,7 +12,11 @@
 
 		{# STYLE SHEETS #}
 		<link rel='stylesheet' href='/stylesheets/style.css'/>
-		<link rel="stylesheet" href="https://bootswatch.com/5/zephyr/bootstrap.min.css">
+		<link
+		rel="stylesheet" href="https://bootswatch.com/5/zephyr/bootstrap.min.css">
+
+		{# META LINKS #}
+		<link rel="shortcut icon" href="images/favicon-helha.ico" type="image/x-icon">
 
 	</head>
 	<body
@@ -26,6 +30,9 @@
 				</button>
 				<div class="collapse navbar-collapse" id="navbarColor02">
 					<ul class="navbar-nav me-auto">
+						<li class="nav-item">
+							<a class="nav-link" href="/">Home</a>
+						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/dashboard">Dashboard</a>
 						</li>
@@ -41,7 +48,9 @@
 		</nav>
 
 		{# MAIN CONTENT HERE #}
-		<main>
+		<main
+			style="min-height: calc(100vh - 171px);">
+			{# CONTENT FROM VIEWS #}
 			{% block body %}{% endblock %}
 		</main>
 

@@ -1,22 +1,50 @@
 {% extends 'layout.twig' %}
 
+{% block scripts %}
+	<script defer src="/javascripts/index.js"></script>
+
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" crossorigin="anonymous">
+{% endblock %}
+
 {% block body %}
 
-
 	<div class="container">
-		<div class="row mb-4">
-			<div class="col-md-6">
-				<img src="/images/logo-helha.png" alt="HELHa Logo">
-			</div>
-			<div class="card col-md-6">
-				<h1 class="card-header text-center">About the project</h1>
-				<div class="card-body">
-					<h4 class="card-title">Title</h4>
-					<p class="card-text">Text</p>
+		<div class="row card mb-4" aria-hidden="true">
+			<div class="row g-0">
+				<div class="col-md-4 p-4">
+					<img src="images/logo-helha.png" alt="HELHa Logo" class="img-fluid rounded-start">
 				</div>
+				<div class="col-md-8">
+					<div class="card-body mb-4">
+						<h2 class="card-title mb-4">Welcome on our Lego Depth Brick Project!</h2>
+						<p class="card-text">
+							The project carried out at the end of our second year of study in Industrial Computer Science at the HELHa consists in measuring the depth of a hole in a Lego brick that passes through our system, displaying the results via a web interface and storing the data in a database.
+						</p>
+						<p class="card-text text-muted">
+							Additional info can be found at
+							<a href="/about" class="text-info">/about</a>.
+						</p>
+					</div>
+				</div>
+			</div>
+			<p class="card-footer mb-0 text-muted">
+				To start using the program, go to
+				<a href="/dashboard" class="text-info">/dashboard</a>.
+			</p>
+		</div>
+		<div class="row">
+			<div class="col-md-4 alert alert-dismissible alert-secondary border mx-1">
+				<button type="button" class="btn-close text-muted" data-bs-dismiss="alert"></button>
+				State of the database :
+				<br>
+				<span class="badge bg-warning" id="badge-database">Database connecting...</span>
+			</div>
+			<div class="col-md-4 alert alert-dismissible alert-danger border mx-1 d-flex justify-content-around align-items-center">
+				<button type="button" class="btn-close text-muted" data-bs-dismiss="alert"></button>
+				<i class="fas fa-exclamation-triangle fs-3"></i>
+				<button type="button" class="btn btn-outline-danger" id="btn-shutdown">Stop web server</button>
 			</div>
 		</div>
 	</div>
-
 
 {% endblock %}

@@ -1,6 +1,7 @@
 const ctx = document.getElementById("myChart");
 
 const badgeDatabase = document.getElementById("badge-database");
+const badgeWaiting = document.getElementById("badge-waiting");
 const txtCurrentSequence = document.getElementById("current-sequence-id");
 const txtStartedTime = document.getElementById("started-time");
 const txtLastSequence = document.getElementById("last-sequence");
@@ -106,11 +107,12 @@ setInterval(() => {
 
       if (res.dbConnection === true) {
         $(badgeDatabase).removeClass("bg-warning");
+        $(badgeDatabase).removeClass("bg-danger");
         $(badgeDatabase).addClass("bg-success");
         $(badgeDatabase).text("Database connected");
       } else {
         $(badgeDatabase).removeClass("bg-success");
-        $(badgeDatabase).addClass("bg-warning");
+        $(badgeDatabase).addClass("bg-danger");
         $(badgeDatabase).text("Database disconnected");
       }
 
@@ -119,11 +121,17 @@ setInterval(() => {
         $(btnStart).addClass("disabled");
         $(btnStop).removeClass("disabled");
         $(divLastSequence).removeAttr("hidden");
-      } else {
+        $(badgeWaiting).addClass("bg-success");
+        $(badgeWaiting).removeClass("bg-warning");
+        $(badgeWaiting).text("Sequence ready!");
+      } else if (!res.currentSequenceID && res.dbConnection === true) {
         $(txtCurrentSequence).text("...");
         $(btnStart).removeClass("disabled");
         $(btnStop).addClass("disabled");
         $(divLastSequence).attr("hidden", "");
+        $(badgeWaiting).removeClass("bg-success");
+        $(badgeWaiting).addClass("bg-warning");
+        $(badgeWaiting).text("Waiting for sequence...");
       }
     },
   });

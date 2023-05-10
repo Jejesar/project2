@@ -63,13 +63,16 @@ router.get("/get", async (req, res, next) => {
     dbConnection = true;
   } catch (error) {
     dbConnection = false;
+    return res.json({ error: error, dbConnection: dbConnection });
   }
 
   try {
     var [currentSequenceID] = await db.query(
       `SELECT idSequence as id FROM currentSequence`
     );
-  } catch (error) {}
+  } catch (error) {
+    return res.json({ error: error, dbConnection: dbConnection });
+  }
 
   try {
     if (currentSequenceID) {
@@ -78,7 +81,9 @@ router.get("/get", async (req, res, next) => {
         currentSequenceID[0].id
       );
     }
-  } catch (error) {}
+  } catch (error) {
+    return res.json({ error: error, dbConnection: dbConnection });
+  }
 
   res.json({
     currentSequenceID: currentSequenceID[0].id,
@@ -94,11 +99,15 @@ router.get("/get/all", async (req, res, next) => {
 });
 
 router.get("/get/last", async (req, res, next) => {
-  var [lastSequence] = await db.query(
-    `SELECT * FROM listSequences WHERE idSequence = (SELECT max(idSequence) FROM listSequences);`
-  );
+  try {
+    var [lastSequence] = await db.query(
+      `SELECT * FROM listSequences WHERE idSequence = (SELECT max(idSequence) FROM listSequences);`
+    );
 
-  res.json(lastSequence[0]);
+    res.json(lastSequence[0]);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
 });
 
 router.get("/get/:id", async (req, res, next) => {
@@ -165,6 +174,10 @@ router.post("/stop", async (req, res, next) => {
 router.delete("/delete/:id", async (req, res, next) => {
   await db.query(`DELETE FROM listSequences WHERE idSequence=?`, req.params.id);
   res.json("OK");
+});
+
+router.post("/shutdown", async (req, res, next) => {
+  process.exit(0);
 });
 
 module.exports = router;
