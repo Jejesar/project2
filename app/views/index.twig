@@ -1,9 +1,22 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
-	<h1>{{title}}</h1>
-	<p class="text-muted">Welcome to
-		{{title}}</p>
+
+
+	<div class="container">
+		<div class="row mb-4">
+			<div class="col-md-6">
+				<img src="/images/logo-helha.png" alt="HELHa Logo">
+			</div>
+			<div class="card col-md-6">
+				<h1 class="card-header text-center">About the project</h1>
+				<div class="card-body">
+					<h4 class="card-title">Title</h4>
+					<p class="card-text">Text</p>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 {% endblock %}

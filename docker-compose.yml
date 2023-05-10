@@ -8,12 +8,12 @@ services:
   #   ports:
   #     - 3000:3000
   #   command: npm run dev
+  #   privilegied: true
   #   devices:
   #     - /dev/ttyACM0:/dev/ttyACM0
 
   db:
     image: hypriot/rpi-mysql
-    restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=project2
@@ -24,7 +24,6 @@ services:
 
   pma:
     image: phpmyadmin
-    restart: unless-stopped
     ports:
       - 8080:80
 
