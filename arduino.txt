@@ -1,0 +1,79 @@
+#include "Wire.h"
+#include "LiquidCrystal_I2C.h"
+ 
+#define TOF10120_ADDRESS 0x52
+ 
+#define OBSTACLE A15 // initialisation de la varaible "OBSTACLE"
+#define BOUTONRES 2 // Buton Reset
+ 
+LiquidCrystal_I2C LCD (0x27,16,2); //définit le type d'écran lcd 16x2
+ 
+float mesure = 11;
+int proximite;
+int reset;
+int tempIni;
+int tempFin;
+int duree;
+ 
+ 
+void setup() {
+  Wire.begin();
+  Serial.begin(9600);
+  LCD.init(); //initialisation de l'afficheur
+  LCD.backlight(); //allume l'écran
+  pinMode(OBSTACLE, INPUT); //initilisation du capteur de proximité
+  pinMode(BOUTONRES,INPUT); //Initialisation du bouton reset
+}
+ 
+float checkDistance() {
+  Wire.beginTransmission(TOF10120_ADDRESS);
+  Wire.write(0x00);
+  Wire.endTransmission(false);
+  Wire.requestFrom(TOF10120_ADDRESS, 2, true);
+  uint16_t distance = Wire.read() << 8 | Wire.read();
+ 
+  return distance * 0.1;
+}
+ 
+void loop() {
+  proximite = digitalRead(OBSTACLE); 
+  reset = digitalRead(BOUTONRES);
+  if (reset == 1) {
+    LCD.clear();
+  }
+  LCD.setCursor(0, 0);
+  if (proximite == 0) {
+    //Serial.println("detect");
+  LCD.print("DETECTER");
+  LCD.setCursor(0, 1);
+  Serial.println(checkDistance());
+  if (mesure >= 11 && mesure < 12) {
+    LCD.print("Distance : ");
+    LCD.print(checkDistance());
+    LCD.print(" CM");
+  } else if (mesure >= 12 && mesure < 13) {
+    LCD.print("Distance : ");
+    LCD.print(checkDistance());
+    LCD.print(" CM");
+  } else if (mesure >= 13 && mesure < 14) {
+    LCD.print("Distance : ");
+    LCD.print(checkDistance());
+    LCD.print(" CM");
+  } else if (mesure >= 14 && mesure < 15) {
+    LCD.print("Distance : ");
+    LCD.print(checkDistance());
+    LCD.print(" CM");
+  } else if (mesure >= 15 && mesure < 16) {
+    LCD.print("Distance : ");
+    LCD.print(checkDistance());
+    LCD.print(" CM");
+  } else {
+    LCD.print("Rien detecter");
+    LCD.clear();
+  }
+} else {
+  tempIni=millis();
+  LCD.print("Rien detecter");
+}
+}
+ 

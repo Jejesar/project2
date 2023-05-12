@@ -13,26 +13,33 @@ const btnStartLast = document.getElementById("btn-start-last");
 const btnStop = document.getElementById("btn-stop");
 
 var data = {
-  labels: ["Measure 1", "Measure 2", "Measure 3", "Measure 4", "Measure 5"],
+  labels: [
+    "Nbr of 0cm",
+    "Nbr of 1cm",
+    "Nbr of 2cm",
+    "Nbr of 3cm",
+    "Nbr of 4cm",
+    "Nbr of 5cm",
+  ],
   datasets: [
     {
-      label: "Waiting to start...",
-      data: [0, 0, 0, 0, 0],
+      label: "Number of blocks per depth",
+      data: [0, 0, 0, 0, 0, 0],
       backgroundColor: [
         "rgba(255, 118, 117,0.2)",
-        // "rgba(250, 177, 160,0.2)",
-        "rgba(255, 234, 167,0.2)",
+        "rgba(250, 177, 160,0.2)",
+        // "rgba(255, 234, 167,0.2)",
         "rgba(85, 239, 196,0.2)",
-        // "rgba(129, 236, 236,0.2)",
+        "rgba(129, 236, 236,0.2)",
         "rgba(116, 185, 255,0.2)",
         "rgba(162, 155, 254,0.2)",
       ],
       borderColor: [
         "rgba(255, 118, 117,1.0)",
-        // "rgba(250, 177, 160,1.0)",
-        "rgba(255, 234, 167,1.0)",
+        "rgba(250, 177, 160,1.0)",
+        // "rgba(255, 234, 167,1.0)",
         "rgba(85, 239, 196,1.0)",
-        // "rgba(129, 236, 236,1.0)",
+        "rgba(129, 236, 236,1.0)",
         "rgba(116, 185, 255,1.0)",
         "rgba(162, 155, 254,1.0)",
       ],
@@ -95,12 +102,14 @@ setInterval(() => {
     dataType: "JSON",
     success: (res) => {
       if (res.dataSequence && res.dataSequence[0]) {
-        data.datasets[0].data[0] = res.dataSequence[0].measure1;
-        data.datasets[0].data[1] = res.dataSequence[0].measure2;
-        data.datasets[0].data[2] = res.dataSequence[0].measure3;
-        data.datasets[0].data[3] = res.dataSequence[0].measure4;
+        data.datasets[0].data[0] = res.dataSequence[0].measure0;
+        data.datasets[0].data[1] = res.dataSequence[0].measure1;
+        data.datasets[0].data[2] = res.dataSequence[0].measure2;
+        data.datasets[0].data[3] = res.dataSequence[0].measure3;
+        data.datasets[0].data[4] = res.dataSequence[0].measure4;
+        data.datasets[0].data[5] = res.dataSequence[0].measure5;
       } else {
-        data.datasets[0].data = [0, 0, 0, 0];
+        data.datasets[0].data = [0, 0, 0, 0, 0, 0];
       }
 
       myChart.update();
