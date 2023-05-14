@@ -63,7 +63,7 @@ router.get("/get", async (req, res, next) => {
     dbConnection = true;
   } catch (error) {
     dbConnection = false;
-    return res.json({ error: error, dbConnection: dbConnection });
+    return res.status(500).json({ error: error, dbConnection: dbConnection });
   }
 
   try {
@@ -71,7 +71,7 @@ router.get("/get", async (req, res, next) => {
       `SELECT idSequence as id FROM currentSequence`
     );
   } catch (error) {
-    return res.json({ error: error, dbConnection: dbConnection });
+    return res.status(500).json({ error: error, dbConnection: dbConnection });
   }
 
   try {
@@ -82,7 +82,7 @@ router.get("/get", async (req, res, next) => {
       );
     }
   } catch (error) {
-    return res.json({ error: error, dbConnection: dbConnection });
+    return res.status(500).json({ error: error, dbConnection: dbConnection });
   }
 
   res.json({
@@ -93,7 +93,11 @@ router.get("/get", async (req, res, next) => {
 });
 
 router.get("/get/all", async (req, res, next) => {
-  var [allSequences] = await db.query("SELECT * FROM listSequences");
+  try {
+    var [allSequences] = await db.query("SELECT * FROM listSequences");
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
 
   res.json(allSequences);
 });
