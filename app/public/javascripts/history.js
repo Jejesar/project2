@@ -1,5 +1,6 @@
 // const moment = require("moment");
 
+const table = document.getElementById("table");
 const tableList = document.getElementById("table-list-sequences");
 
 var rows = [];
@@ -74,6 +75,10 @@ const renderTable = () => {
     var createdAt = document.createElement("td");
     createdAt.innerText = new Date(row.createdTimestamp).toLocaleString();
     currentRow.appendChild(createdAt);
+
+    var measure0 = document.createElement("td");
+    measure0.innerText = row.measure0;
+    currentRow.appendChild(measure0);
 
     var measure1 = document.createElement("td");
     measure1.innerText = row.measure1;

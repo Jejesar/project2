@@ -1,53 +1,101 @@
 {% extends "layout.twig" %}
 
+{% block scripts %}
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" crossorigin="anonymous">
+{% endblock %}
+
 {% block body %}
 
 	<div class="container">
-
 		<div class="card mb-4">
 			<h1 class="card-header text-center">About the project</h1>
 			<div class="card-body">
-				<h4 class="card-title">Title</h4>
-				<p class="card-text">Text</p>
+				<h4 class="card-title text-center">List of primary components we used</h4>
+				<div class="list-group col-lg-6 mx-auto">
+					<div class="list-group-item d-flex justify-content-between align-items-center gap-3">
+						<div>
+							<h6 class="mb-0">Rasberry Pi 4B</h6>
+							<p class="mb-0 text-muted">Used for database, web server, api.</p>
+						</div>
+						<a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary h-100 stretched-link">
+							<i class="fas fa-external-link-alt"></i>
+						</a>
+					</div>
+					<div class="list-group-item d-flex justify-content-between align-items-center gap-3">
+						<div>
+							<h6 class="mb-0">Arduino Mega</h6>
+							<p class="mb-0 text-muted">
+								Used to read to sensors' informations and send it to the Rasberry.
+							</p>
+						</div>
+						<a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary h-100 stretched-link">
+							<i class="fas fa-external-link-alt"></i>
+						</a>
+					</div>
+					<div class="list-group-item d-flex justify-content-between align-items-center gap-3">
+						<div>
+							<h6 class="mb-0">TOF10120</h6>
+							<p class="mb-0 text-muted">
+								Laser distance sensor used to measure the depth of a block.
+							</p>
+						</div>
+						<a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary h-100 stretched-link">
+							<i class="fas fa-external-link-alt"></i>
+						</a>
+					</div>
+					<div class="list-group-item d-flex justify-content-between align-items-center gap-3">
+						<div>
+							<h6 class="mb-0">IR-OBST</h6>
+							<p class="mb-0 text-muted">
+								Infrared sensor used to detect if a block is under the laser																																																																																																																																																				              sensor.
+							</p>
+						</div>
+						<a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary h-100 stretched-link">
+							<i class="fas fa-external-link-alt"></i>
+						</a>
+					</div>
+				</div>
 			</div>
 		</div>
 
 		<div class="card mb-4">
 			<h1 class="card-header text-center">Contact links</h1>
 			<div class="card-body">
-				<p class="card-text">
-					<div class="mb-4">
-						<b>Ali DERELI :</b>
-						<br>
-						Email :
-						<i>
-							<a href="mailto:" class="link-info">la21...</a>
-						</i>
+				<div class="list-group col-lg-6 mx-auto">
+					<div class="list-group-item">
+						<h6 class="mb-0">Ali DERELI</h6>
+						<p class="mb-0 text-muted">
+							Email :
+							<i>
+								<a href="mailto:" class="link-info">la21...</a>
+							</i>
+						</p>
 					</div>
-					<div class="mb-4">
-						<b>Léandre KARASSAVAS :</b>
-						<br>
-						Email :
-						<i>
-							<a href="mailto:" class="link-info">la21...</a>
-						</i>
+					<div class="list-group-item">
+						<h6 class="mb-0">Léandre KARASSAVAS</h6>
+						<p class="mb-0 text-muted">
+							Email :
+							<i>
+								<a href="mailto:" class="link-info">la21...</a>
+							</i>
+						</p>
 					</div>
-					<div class="mb-4">
-						<b>Jérôme SARTIAUX :</b>
-						<br>
-						Email :
-						<i>
-							<a href="mailto:" class="link-info">la21...</a>
-						</i><br>
-						Github :
-						<i>
-							<a href="https://github.com/Jejesar" target="_blank" rel="noopener noreferrer" class="link-info">@Jejesar</a>
-						</i>
+					<div class="list-group-item">
+						<h6 class="mb-0">Jérôme SARTIAUX</h6>
+						<p class="mb-0 text-muted">
+							Email :
+							<i>
+								<a href="mailto:" class="link-info">la21...</a>
+							</i><br/>
+							Github :
+							<i>
+								<a href="https://github.com/Jejesar" target="_blank" rel="noopener noreferrer" class="link-info">@Jejesar</a>
+							</i>
+						</p>
 					</div>
-				</p>
+				</div>
 			</div>
 		</div>
-
 	</div>
 
-</div>{% endblock %}
+{% endblock %}
