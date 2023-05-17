@@ -22,8 +22,11 @@ router.get("/history", async (req, res, next) => {
   res.render("history", { title: "History page | Project 2" });
 });
 
-router.get("/edit", async (req, res, next) => {
-  res.render("edit", { title: "Edit page | Project 2" });
+router.get("/edit/:id", async (req, res, next) => {
+  res.render("edit", {
+    title: "Edit page | Project 2",
+    idSequence: req.params.id,
+  });
 });
 
 module.exports = router;

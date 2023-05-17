@@ -4,48 +4,48 @@ var router = express.Router();
 // ARDUINO LINK DATA
 const { SerialPort } = require("serialport");
 const { ReadlineParser } = require("@serialport/parser-readline");
-const port = new SerialPort({ path: "/dev/ttyACM0", baudRate: 9600 });
+// const port = new SerialPort({ path: "/dev/ttyACM0", baudRate: 9600 });
 
-const parser = port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
+// const parser = port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
 
-var oldArduinoData;
-var measuredType;
-parser.on("data", async (data) => {
-  if (oldArduinoData != data) {
-    oldArduinoData = data;
+// var oldArduinoData;
+// var measuredType;
+// parser.on("data", async (data) => {
+//   if (oldArduinoData != data) {
+//     oldArduinoData = data;
 
-    if (data.toLowerCase().startsWith("measure")) {
-      // Message expected : `Measure : "[value]"`
+//     if (data.toLowerCase().startsWith("measure")) {
+//       // Message expected : `Measure : "[value]"`
 
-      measuredType = data.split(`"`)[1];
+//       measuredType = data.split(`"`)[1];
 
-      var [currentSequence] = await db.query(
-        "SELECT idSequence FROM currentSequence"
-      );
+//       var [currentSequence] = await db.query(
+//         "SELECT idSequence FROM currentSequence"
+//       );
 
-      if (currentSequence[0].idSequence) {
-        db.query(
-          `UPDATE listSequences
-          JOIN (SELECT MAX(idSequence) AS maxID FROM listSequences) AS list2
-          ON idSequence = list2.maxID
-          SET measure? = measure? + 1`,
-          [Number(measuredType), Number(measuredType)]
-        );
-      }
+//       if (currentSequence[0].idSequence) {
+//         db.query(
+//           `UPDATE listSequences
+//           JOIN (SELECT MAX(idSequence) AS maxID FROM listSequences) AS list2
+//           ON idSequence = list2.maxID
+//           SET measure? = measure? + 1`,
+//           [Number(measuredType), Number(measuredType)]
+//         );
+//       }
 
-      console.log(
-        "Current sequence : " +
-          currentSequence[0].idSequence +
-          "\tType : " +
-          measuredType
-      );
-    } else if (data.toLowerCase().startsWith("reset")) {
-      // Message expected : `RESET`
+//       console.log(
+//         "Current sequence : " +
+//           currentSequence[0].idSequence +
+//           "\tType : " +
+//           measuredType
+//       );
+//     } else if (data.toLowerCase().startsWith("reset")) {
+//       // Message expected : `RESET`
 
-      measuredType = null;
-    }
-  }
-});
+//       measuredType = null;
+//     }
+//   }
+// });
 
 // DATABASE LINK
 const db = require("../functions/database");
@@ -70,11 +70,14 @@ router.get("/get", async (req, res, next) => {
     var [currentSequenceID] = await db.query(
       `SELECT idSequence as id FROM currentSequence`
     );
-  } catch (error) {
-    return res.status(500).json({ error: error, dbConnection: dbConnection });
-  }
 
-  try {
+    if (currentSequenceID[0].id == null) {
+      return res.json({
+        currentSequenceID: null,
+        dbConnection: dbConnection,
+      });
+    }
+
     if (currentSequenceID) {
       var [dataSequence] = await db.query(
         `SELECT * FROM listSequences WHERE idSequence=?`,
@@ -136,13 +139,19 @@ router.post("/create", async (req, res, next) => {
 });
 
 router.post("/edit/:id", async (req, res, next) => {
-  var data = req.body;
-  console.log(data);
-  //   await db.query(
-  //     "UPDATE currentSequence SET `0cm` = ? WHERE idSequence = ?",
-  //     data[0],
-  //     req.params.id
-  //   );
+  var { sequenceName, sequenceComment } = req.body;
+  console.log(sequenceName, sequenceComment);
+
+  try {
+    var [editedSequence] = await db.query(
+      "UPDATE `listSequences` SET `name`=?,`comment`=? WHERE idSequence=?",
+      [sequenceName, sequenceComment, Number(req.params.id)]
+    );
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+
+  res.json("OK");
 });
 
 router.post("/insert/:type", async (req, res, next) => {

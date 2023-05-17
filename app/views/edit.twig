@@ -1,3 +1,29 @@
 {% extends "layout.twig" %}
 
-{% block body %}{% endblock %}
+{% block scripts %}
+	<script defer src="/javascripts/submit.js"></script>
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="container">
+		<div class="card">
+			<h1 class="card-header text-center">Edit sequence N°{{idSequence}}</h1>
+			<div class="card-body">
+				<form id="edit-form" action="/edit/{{idSequence}}" method="POST">
+					<div class="form-group mt-3">
+						<label for="sequenceName">Name</label>
+						<input type="text" class="form-control" name="sequenceName" id="sequenceName" placeholder="Ex: First sequence">
+					</div>
+					<div class="form-group mt-3">
+						<label for="sequenceComment">Comment</label>
+						<textarea class="form-control" name="sequenceComment" id="sequenceComment" rows="3" placeholder="Ex: My best sequence ever!"></textarea>
+					</div>
+					<button type="submit" class="btn btn-primary mt-4">Submit</button>
+				</form>
+			</div>
+		</div>
+
+
+	{% endblock %}

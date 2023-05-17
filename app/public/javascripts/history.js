@@ -6,14 +6,14 @@ const tableList = document.getElementById("table-list-sequences");
 var rows = [];
 var previousSize = 0;
 
-setInterval(() => {
-  checkHistory();
-  if (rows.length != previousSize) {
-    tableList.innerHTML = "";
-    renderTable();
-    previousSize = rows.length;
-  }
-}, 5000);
+// setInterval(() => {
+checkHistory();
+if (rows.length != previousSize) {
+  tableList.innerHTML = "";
+  renderTable();
+  previousSize = rows.length;
+}
+// }, 5000);
 
 const checkHistory = async () => {
   await $.ajax({
@@ -107,10 +107,10 @@ const renderTable = () => {
     var btnCol = document.createElement("td");
     $(btnCol).html(`
     <button onclick="edit(${row.idSequence})" class="btn btn-dark btn-sm bg-dark text-white mx-1 my-1">
-      <i class="fa fa-pencil" aria-hidden="true"></i>
+      <i class="fas fa-pencil-alt" aria-hidden="true"></i>
     </button>
     <button onclick="del(${row.idSequence})" class="btn btn-dark btn-sm bg-dark text-white mx-1 my-1">
-      <i class="fa fa-trash" aria-hidden="true"></i>
+      <i class="fas fa-trash" aria-hidden="true"></i>
     </button>
     `);
     currentRow.appendChild(btnCol);
@@ -132,4 +132,8 @@ const del = async (id) => {
 
   await checkHistory();
   renderTable();
+};
+
+const edit = async (id) => {
+  document.location = `/edit/${id}`;
 };
