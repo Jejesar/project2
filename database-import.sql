@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : db
--- Généré le : mar. 09 mai 2023 à 23:19
+-- Généré le : jeu. 18 mai 2023 à 16:27
 -- Version du serveur : 5.7.42
 -- Version de PHP : 8.1.16
 
@@ -64,8 +64,10 @@ CREATE TABLE `listSequences` (
 --
 
 CREATE TABLE `measures` (
-  `idSequence` int(10) UNSIGNED NOT NULL,
-  `typeOf` varchar(64) NOT NULL COMMENT '0cm, 2cm, 4cm, 6cm'
+  `idMeasure` int(11) UNSIGNED NOT NULL,
+  `idSequence` int(10) UNSIGNED DEFAULT NULL,
+  `typeOf` varchar(64) NOT NULL COMMENT '0cm, 2cm, 4cm, 6cm',
+  `createdTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -88,6 +90,7 @@ ALTER TABLE `listSequences`
 -- Index pour la table `measures`
 --
 ALTER TABLE `measures`
+  ADD PRIMARY KEY (`idMeasure`),
   ADD KEY `idSequenceMeasure` (`idSequence`);
 
 --
@@ -99,6 +102,12 @@ ALTER TABLE `measures`
 --
 ALTER TABLE `listSequences`
   MODIFY `idSequence` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `measures`
+--
+ALTER TABLE `measures`
+  MODIFY `idMeasure` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Contraintes pour les tables déchargées
