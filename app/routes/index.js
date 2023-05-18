@@ -29,4 +29,8 @@ router.get("/edit/:id", async (req, res, next) => {
   });
 });
 
+router.get("/real-time", async (req, res, next) => {
+  res.render("realTime", { title: "Real time measures | Project 2" });
+});
+
 module.exports = router;

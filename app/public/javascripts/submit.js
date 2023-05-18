@@ -4,23 +4,17 @@ $(editForm).submit((e) => {
   e.preventDefault();
 
   // Get the form data
-  // var formData = new FormData($(editForm));
   var formData = $(editForm).serialize();
   console.log(document.location.pathname);
 
-  // Submit the form using AJAX
+  // Submit the form using the API
   $.ajax({
     type: "POST",
     url: `/api${document.location.pathname}`,
     data: formData,
     success: (res) => {
-      // Handle success response
+      // Redirect to the history page
       document.location = "/history";
-    },
-    error: () => {
-      // Handle error response
-      // alert("Error submitting the form. Please try again.");
-      console.log(res);
     },
   });
 });

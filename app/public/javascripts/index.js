@@ -3,12 +3,6 @@ const bodyPage = document.getElementsByClassName("container")[0];
 
 const btnShutdown = document.getElementById("btn-shutdown");
 
-console.log(bodyPage);
-
-// $(bodyPage).css({
-//   minHeight: calc("100vh - 147px"),
-// });
-
 setInterval(() => {
   $.ajax({
     type: "GET",
