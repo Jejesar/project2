@@ -9,6 +9,7 @@ services:
     privileged: true
     ports:
       - 3000:3000
+    # command: npm start
     command: npm run dev
     restart: always
     depends_on:
@@ -17,7 +18,8 @@ services:
     #   - /dev/ttyACM0:/dev/ttyACM0
 
   db:
-    image: hypriot/rpi-mysql
+    # image: hypriot/rpi-mysql
+    image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=project2

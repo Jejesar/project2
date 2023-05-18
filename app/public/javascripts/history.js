@@ -1,68 +1,19 @@
-// const moment = require("moment");
-
 const table = document.getElementById("table");
 const tableList = document.getElementById("table-list-sequences");
 
 var rows = [];
-var previousSize = 0;
-
-// setInterval(() => {
-checkHistory();
-if (rows.length != previousSize) {
-  tableList.innerHTML = "";
-  renderTable();
-  previousSize = rows.length;
-}
-// }, 5000);
-
-const checkHistory = async () => {
-  await $.ajax({
-    type: "get",
-    url: "/api/get/all",
-    success: (res) => {
-      // console.log(res);
-      rows = res;
-    },
-  });
-};
 
 $.ajax({
   type: "get",
   url: "/api/get/all",
   success: (res) => {
-    // console.log(res);
     rows = res;
   },
 }).then(() => renderTable());
 
 const renderTable = () => {
-  var rowHTML = "";
   rows.forEach((row) => {
-    // console.log(row);
     var currentRow = document.createElement("tr");
-
-    // rowHTML += `<tr>
-    //   <td>${row.idSequence}</td>
-    //   <td>${row.name}</td>
-    //   <td>${new Date(row.createdTimestamp).toLocaleString()}</td>
-    //   <td>${row.measure1}</td>
-    //   <td>${row.measure2}</td>
-    //   <td>${row.measure3}</td>
-    //   <td>${row.measure4}</td>
-    //   <td>${row.comment}</td>
-    //   <td>
-    //     <button onclick="edit(${
-    //       row.idSequence
-    //     })" class="btn btn-dark btn-sm bg-dark text-white mx-1 my-1">
-    //       <i class="fa fa-pencil" aria-hidden="true"></i>
-    //     </button>
-    //     <button onclick="del(${
-    //       row.idSequence
-    //     })" class="btn btn-dark btn-sm bg-dark text-white mx-1 my-1">
-    //       <i class="fa fa-trash" aria-hidden="true"></i>
-    //     </button>
-    //   </td>
-    // </tr>`;
 
     var idSequence = document.createElement("td");
     idSequence.innerText = row.idSequence;
@@ -117,7 +68,6 @@ const renderTable = () => {
 
     $(tableList).prepend(currentRow); // Rerversed .append
   });
-  // $(tableList).html(rowHTML);
 };
 
 const del = async (id) => {
