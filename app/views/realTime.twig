@@ -1,0 +1,28 @@
+{% extends "layout.twig" %}
+
+{% block scripts %}
+	<script defer src="/javascripts/realTime.js"></script>
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+		<div class="card mb-4 mx-lg-4">
+			<h1 class="card-header text-center">List of all measures</h1>
+			<div class="card-body p-0">
+				<table class="table table-striped table-hover border rounded m-0" id="table">
+					<thead>
+						<tr>
+							<th scope="col">ID</th>
+							<th scope="col">Sequence ID</th>
+							<th scope="col">Created at</th>
+							<th scope="col">Depth (in cm)</th>
+						</tr>
+					</thead>
+					<tbody id="table-list-measures"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

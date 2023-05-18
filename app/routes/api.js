@@ -1,51 +1,8 @@
 var express = require("express");
 var router = express.Router();
 
-// ARDUINO LINK DATA
-const { SerialPort } = require("serialport");
-const { ReadlineParser } = require("@serialport/parser-readline");
-const port = new SerialPort({ path: "/dev/ttyACM0", baudRate: 9600 });
-
-const parser = port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
-
-var oldArduinoData;
-var measuredType;
-parser.on("data", async (data) => {
-  if (oldArduinoData != data) {
-    oldArduinoData = data;
-
-    if (data.toLowerCase().startsWith("measure")) {
-      // Message expected : `Measure : "[value]"`
-
-      measuredType = data.split(`"`)[1];
-
-      var [currentSequence] = await db.query(
-        "SELECT idSequence FROM currentSequence"
-      );
-
-      if (currentSequence[0].idSequence) {
-        db.query(
-          `UPDATE listSequences
-          JOIN (SELECT MAX(idSequence) AS maxID FROM listSequences) AS list2
-          ON idSequence = list2.maxID
-          SET measure? = measure? + 1`,
-          [Number(measuredType), Number(measuredType)]
-        );
-      }
-
-      console.log(
-        "Current sequence : " +
-          currentSequence[0].idSequence +
-          "\tType : " +
-          measuredType
-      );
-    } else if (data.toLowerCase().startsWith("reset")) {
-      // Message expected : `RESET`
-
-      measuredType = null;
-    }
-  }
-});
+// ARDUINO READER
+const arduino = require("../functions/arduino");
 
 // DATABASE LINK
 const db = require("../functions/database");
@@ -115,6 +72,15 @@ router.get("/get/last", async (req, res, next) => {
   } catch (error) {
     res.status(500).json({ error: error });
   }
+});
+
+router.get("/get/measures", async (req, res, next) => {
+  try {
+    var [measures] = await db.query("SELECT * FROM measures");
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+  res.json(measures);
 });
 
 router.get("/get/:id", async (req, res, next) => {

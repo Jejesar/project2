@@ -128,7 +128,7 @@ bool sendData = false;
 float maxDistance = 0;
 float currentDistance = 0;
 unsigned long previousTime = 0;
-const unsigned long delayTime = 500;
+const unsigned long delayTime = 3000;
 
 void setup()
 {
@@ -174,49 +174,56 @@ void loop()
 
         if (millis() - previousTime >= delayTime)
         {
-            sendData = true;
-            sendMessage(maxDistance);
-            maxDistance = 0;
             previousTime = millis();
+            ir1Active = false;
+            ir2Active = false;
         }
+        sendData = true;
+    }
+
+    if (!ir1Active && !ir2Active)
+    {
+        Serial.println("RESET");
     }
 
     // Envoi des données
     if (sendData)
     {
+        sendMessage(maxDistance);
+        maxDistance = 0;
         sendData = false;
-        Serial.println("RESET");
     }
 }
 
 void sendMessage(float distance)
 {
-    Serial.print("Mesure : \"");
+    Serial.print("Measure : \"");
 
-    if (distance >= 9.5f)
-    {
-        Serial.print(5);
-    }
-    else if (distance >= 8.5)
-    {
-        Serial.print(4);
-    }
-    else if (distance >= 7.5)
-    {
-        Serial.print(3);
-    }
-    else if (distance >= 6.5)
-    {
-        Serial.print(2);
-    }
-    else if (distance >= 5.5)
-    {
-        Serial.print(1);
-    }
-    else if (distance)
-    {
-        Serial.print(0);
-    }
+    // if (distance >= 9.5f)
+    // {
+    //     Serial.print(5);
+    // }
+    // else if (distance >= 8.5)
+    // {
+    //     Serial.print(4);
+    // }
+    // else if (distance >= 7.5)
+    // {
+    //     Serial.print(3);
+    // }
+    // else if (distance >= 6.5)
+    // {
+    //     Serial.print(2);
+    // }
+    // else if (distance >= 5.5)
+    // {
+    //     Serial.print(1);
+    // }
+    // else
+    // {
+    //     Serial.print(0);
+    // }
 
+    Serial.print(distance);
     Serial.println("\"");
 }
