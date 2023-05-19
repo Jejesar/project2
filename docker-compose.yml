@@ -8,13 +8,13 @@ services:
     privileged: true
     ports:
       - 3000:3000
-    command: npm start
-    # command: npm run dev
-    restart: always
+    # command: npm start
+    command: npm run dev
+    # restart: always
     depends_on:
       - db
     devices:
-      - /dev/ttyACM0:/dev/ttyACM0
+      - /dev/ttyUSB0:/dev/ttyACM0
 
   db:
     image: hypriot/rpi-mysql
@@ -24,7 +24,7 @@ services:
       - MYSQL_DATABASE=project2
     volumes:
       - dbdata:/var/lib/mysql
-    restart: always
+    # restart: always
     ports:
       - 3306:3306
 
@@ -32,7 +32,7 @@ services:
     image: phpmyadmin
     ports:
       - 8080:80
-    restart: always
+    # restart: always
 
 volumes:
   dbdata:

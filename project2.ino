@@ -1,117 +1,12 @@
-// #define IR1 2 // initialisation de la variable "OBSTACLE"
-// #define IR2 3
-// #define BOUTONRES 4 // Buton Reset
-// #define LASER A0
+#include "Wire.h"
+#include "LiquidCrystal_I2C.h"
 
-// int distanceMax = 0;
-// // unsigned long timer;
-// unsigned long elaspedTime; // Chrono lorsque la mesure est entre 4.5 et 5.5
+#define TOF10120_ADDRESS 0x52
+LiquidCrystal_I2C LCD(0x27, 16, 2); // Définit le type d'écran lcd 16x2
 
-// void setup()
-// {
-//     Serial.begin(9600);
-
-//     pinMode(IR1, INPUT);
-//     pinMode(IR2, INPUT);
-
-//     pinMode(LASER, INPUT);
-// }
-
-// float checkDistance()
-// {
-//     float distance = analogRead(LASER);
-//     return distance * 0.01;
-// }
-
-// void loop()
-// {
-
-//     bool proximite1 = digitalRead(IR1);
-//     bool proximite2 = digitalRead(IR2);
-
-//     float distance = checkDistance(); // mesurer la distance
-
-//     if (proximite1 && proximite2)
-//     {
-//         }
-
-//     // Serial.println(distance);
-
-//     // if (proximite1 == 1 && proximite2 == 1)
-//     // {
-//     //     distanceMax = max(distanceMax, distance);
-//     //     elaspedTime = millis();
-//     //     // if ((millis() - timer >= 500) && (distanceMax > 4.5 && distanceMax < 5.5))
-//     //     while (distanceMax < 5.5 && distanceMax > 4.5)
-//     //     {
-//     //         if (millis() - elaspedTime >= 500)
-//     //         {
-//     //             sendMesure(distanceMax);
-//     //             elaspedTime = millis();
-//     //             distanceMax = 0;
-//     //         }
-//     //         // timer = millis();
-//     //     }
-//     //     if (distanceMax > 5.5 && distanceMax < 4.5)
-//     //     {
-//     //         if (millis() - elaspedTime >= 500)
-//     //         {
-//     //             sendMesure(distanceMax);
-//     //             elaspedTime = millis();
-//     //             distanceMax = 0;
-//     //         }
-//     //     }
-//     // }
-//     // else if (proximite1 == 0 && proximite2 == 1)
-//     // {
-//     //     // Serial.println(distanceMax);
-//     // }
-//     // else if (proximite1 == 1 && proximite2 == 0)
-//     // {
-//     //     distanceMax = 0;
-//     //     // timer = millis();
-//     // }
-// }
-
-// void sendMesure(float msgValue)
-// {
-
-//     String msgStart = "Mesure : \"";
-//     String msgEnd = "\"\r\n";
-
-//     if (msgValue > 9.5)
-//     {
-//         Serial.print(msgStart + 0 + msgEnd);
-//     }
-//     else if (msgValue > 8.5)
-//     {
-//         Serial.print(msgStart + 1 + msgEnd);
-//     }
-//     else if (msgValue > 7.5)
-//     {
-//         Serial.print(msgStart + 2 + msgEnd);
-//     }
-//     else if (msgValue > 6.5)
-//     {
-//         Serial.print(msgStart + 3 + msgEnd);
-//     }
-//     else if (msgValue > 5.5)
-//     {
-//         Serial.print(msgStart + 4 + msgEnd);
-//     }
-//     else if (msgValue > 4.5)
-//     {
-//         Serial.print(msgStart + 5 + msgEnd);
-//     }
-//     else if (msgValue == 0)
-//     {
-//         Serial.print("RESET\r\n");
-//     }
-// }
-// Constantes pour les broches des capteurs
-const int IR1_PIN = 2;
-const int IR2_PIN = 3;
-const int LASER_PIN = A0;
+const int IR1_PIN = A15;
+const int IR2_PIN = 6;
+const int BoutonRes = 2;
 
 // Variables pour stocker les valeurs des capteurs
 int ir1Value = 0;
@@ -120,7 +15,7 @@ float laserValue = 0;
 
 // Variables pour le suivi de l'état des capteurs
 bool ir1Active = false;
-bool ir2Active = false;
+bool ir2Active = true;
 bool laserMeasuring = false;
 bool sendData = false;
 
@@ -128,16 +23,29 @@ bool sendData = false;
 float maxDistance = 0;
 float currentDistance = 0;
 unsigned long previousTime = 0;
-const unsigned long delayTime = 3000;
+const unsigned long delayTime = 2000;
 
 void setup()
 {
+    Wire.begin();
     Serial.begin(9600);
-
+    LCD.init();
+    LCD.backlight();
     // Initialisation des broches des capteurs
     pinMode(IR1_PIN, INPUT);
     pinMode(IR2_PIN, INPUT);
-    pinMode(LASER_PIN, INPUT);
+    pinMode(BoutonRes, INPUT);
+}
+
+float checkDistance()
+{
+    Wire.beginTransmission(TOF10120_ADDRESS);
+    Wire.write(0x00);
+    Wire.endTransmission(false);
+    Wire.requestFrom(TOF10120_ADDRESS, 2, true);
+    uint16_t distance = Wire.read() << 8 | Wire.read();
+
+    return distance * 0.1;
 }
 
 void loop()
@@ -145,10 +53,10 @@ void loop()
     // Lecture des valeurs des capteurs
     ir1Value = digitalRead(IR1_PIN);
     ir2Value = digitalRead(IR2_PIN);
-    laserValue = analogRead(LASER_PIN) * 0.01;
+    laserValue = checkDistance();
 
     // Vérification des capteurs IR
-    if (ir1Value == HIGH && ir2Value == HIGH)
+    if (ir1Value == LOW && ir2Value == LOW)
     {
         ir1Active = true;
         ir2Active = true;
@@ -189,41 +97,25 @@ void loop()
     // Envoi des données
     if (sendData)
     {
+        LCD.setCursor(0, 0);
+        LCD.print("Detected");
+        LCD.setCursor(1, 0);
+        LCD.print("depth : ");
+        LCD.print(maxDistance);
         sendMessage(maxDistance);
         maxDistance = 0;
         sendData = false;
+    }
+    else
+    {
+        LCD.clear();
+        LCD.print("Not detected");
     }
 }
 
 void sendMessage(float distance)
 {
     Serial.print("Measure : \"");
-
-    // if (distance >= 9.5f)
-    // {
-    //     Serial.print(5);
-    // }
-    // else if (distance >= 8.5)
-    // {
-    //     Serial.print(4);
-    // }
-    // else if (distance >= 7.5)
-    // {
-    //     Serial.print(3);
-    // }
-    // else if (distance >= 6.5)
-    // {
-    //     Serial.print(2);
-    // }
-    // else if (distance >= 5.5)
-    // {
-    //     Serial.print(1);
-    // }
-    // else
-    // {
-    //     Serial.print(0);
-    // }
-
     Serial.print(distance);
     Serial.println("\"");
 }

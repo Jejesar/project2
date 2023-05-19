@@ -18,11 +18,17 @@ setInterval(() => {
     url: "/api/get/measures",
     success: (res) => {
       newRows = res;
-      if (newRows.length > rows.length) {
-        newRows = newRows.slice(rows.length - 1, newRows.length - 1);
-      }
+      // if (newRows.length > rows.length) {
+      //   newRows = newRows.slice(rows.length - 1, newRows.length - 1);
+      // }
+      console.log(
+        "New rows length ",
+        newRows.length,
+        " Rows length ",
+        rows.length
+      );
     },
-  }).then(() => addRows());
+  });
 }, 1000);
 
 const addRows = () => {

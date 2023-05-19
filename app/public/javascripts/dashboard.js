@@ -65,37 +65,6 @@ const myChart = new Chart(ctx, {
 });
 
 setInterval(() => {
-  //   checkSequence();
-  //   randomSequence();
-  myChart.update();
-}, 1000);
-
-const randomSequence = () => {
-  var random = [];
-
-  for (let i = 0; i < 7; i++) {
-    random[i] = Math.floor(Math.random() * 10);
-  }
-
-  data.datasets[0].data = [...random];
-};
-
-// const uploadRandom = (random) => {
-//   console.log(data.datasets[0].data);
-
-//   let info = [];
-//   info[0] = data.datasets[0].data[0];
-
-//   $.ajax({
-//     type: "post",
-//     url: "/api/edit/2",
-//     data: { test: "test", info: info },
-//     dataType: "JSON",
-//     success: (res) => {},
-//   });
-// };
-
-setInterval(() => {
   $.ajax({
     type: "GET",
     url: "/api/get",
@@ -132,7 +101,7 @@ setInterval(() => {
         $(divLastSequence).removeAttr("hidden");
         $(badgeWaiting).addClass("bg-success");
         $(badgeWaiting).removeClass("bg-warning");
-        $(badgeWaiting).text("Sequence ready!");
+        $(badgeWaiting).text("Sequence ready");
       } else if (!res.currentSequenceID && res.dbConnection === true) {
         $(txtCurrentSequence).text("...");
         $(btnStart).removeClass("disabled");
