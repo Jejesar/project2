@@ -5,7 +5,6 @@ $(editForm).submit((e) => {
 
   // Get the form data
   var formData = $(editForm).serialize();
-  console.log(document.location.pathname);
 
   // Submit the form using the API
   $.ajax({

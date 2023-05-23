@@ -1,21 +1,3 @@
-// const mysql = require("mysql2");
-// var db;
-
-// try {
-//   db = mysql
-//     .createConnection({
-//       host: "localhost",
-//       user: "root",
-//       password: "password",
-//       database: "project2",
-//     })
-//     .promise();
-// } catch (error) {
-//   console.error("Database connection error");
-// }
-
-// module.exports = db;
-
 const mysql = require("mysql2");
 
 const db = mysql.createConnection({

@@ -5,8 +5,6 @@ const db = require("../functions/database");
 
 /* GET home page. */
 router.get("/", async (req, res, next) => {
-  // var [test] = await db.query("USE project2;");
-  // console.log(test);
   res.render("index", { title: "Home page | Project 2" });
 });
 
