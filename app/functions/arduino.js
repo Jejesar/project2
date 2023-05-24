@@ -5,8 +5,8 @@ var dbConnection = false;
 // ARDUINO LINK DATA
 const { SerialPort } = require("serialport");
 const { ReadlineParser } = require("@serialport/parser-readline");
+// Define SerialPort device and delimiter
 const port = new SerialPort({ path: "/dev/ttyACM0", baudRate: 9600 });
-
 const parser = port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
 
 var oldArduinoData;
@@ -14,12 +14,18 @@ var measured = 0;
 var measuredArray = [];
 var receivedTime;
 var measuredMax = 0;
+
+// Arduino sending data to Raspberry
 parser.on("data", async (data) => {
+  // Keep only new data
   if (oldArduinoData != data) {
     oldArduinoData = data;
 
+    // Especting message from Arduino (Measure : "[value in cm)")
     if (data.startsWith("Measure :")) {
+      // Select only [value in cm]
       measured = Number(data.split(`"`)[1]);
+
       if (measuredArray.length == 0) receivedTime = new Date();
       measuredArray.push(measured);
       measuredMax = Math.max(measuredMax, measured);

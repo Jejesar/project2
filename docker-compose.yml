@@ -7,9 +7,9 @@ services:
       - ./app:/home/node/app
     privileged: true
     ports:
-      - 3000:3000
-    # command: npm start
-    command: npm run dev
+      - 80:3000
+    command: npm start
+    # command: npm run dev
     restart: always
     depends_on:
       - db
