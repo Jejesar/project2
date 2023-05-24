@@ -95,7 +95,6 @@ router.post("/create", async (req, res, next) => {
   await db
     .query("INSERT INTO listSequences (name, comment) VALUES (NULL, NULL)")
     .then(async ([result]) => {
-      console.log(result.insertId);
       await db.query(
         "UPDATE currentSequence SET idSequence=?",
         result.insertId
@@ -106,7 +105,6 @@ router.post("/create", async (req, res, next) => {
 
 router.post("/edit/:id", async (req, res, next) => {
   var { sequenceName, sequenceComment } = req.body;
-  console.log(sequenceName, sequenceComment);
 
   try {
     var [editedSequence] = await db.query(

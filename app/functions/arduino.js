@@ -23,7 +23,6 @@ parser.on("data", async (data) => {
       if (measuredArray.length == 0) receivedTime = new Date();
       measuredArray.push(measured);
       measuredMax = Math.max(measuredMax, measured);
-      console.log(measuredMax, receivedTime);
     }
 
     if (data == "RESET") {
@@ -69,40 +68,8 @@ parser.on("data", async (data) => {
         );
       }
 
-      console.log(currentSequence, measuredType, measuredMax);
       measuredArray = [];
       measuredMax = 0;
     }
   }
-
-  // if (data.toLowerCase().startsWith("measure")) {
-  //   // Message expected : `Measure : "[value]"`
-
-  //   measuredType = data.split(`"`)[1];
-
-  //   var [currentSequence] = await db.query(
-  //     "SELECT idSequence FROM currentSequence"
-  //   );
-
-  //   if (currentSequence[0].idSequence) {
-  //     db.query(
-  //       `UPDATE listSequences
-  //       JOIN (SELECT MAX(idSequence) AS maxID FROM listSequences) AS list2
-  //       ON idSequence = list2.maxID
-  //       SET measure? = measure? + 1`,
-  //       [Number(measuredType), Number(measuredType)]
-  //     );
-  //   }
-
-  //   console.log(
-  //     "Current sequence : " +
-  //       currentSequence[0].idSequence +
-  //       "\tType : " +
-  //       measuredType
-  //   );
-  // } else if (data.toLowerCase().startsWith("reset")) {
-  //   // Message expected : `RESET`
-
-  //   measuredType = null;
-  // }
 });
