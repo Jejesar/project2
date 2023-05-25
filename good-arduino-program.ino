@@ -1,7 +1,7 @@
 #include "Wire.h"
 #include "LiquidCrystal_I2C.h"
-
 #define TOF10120_ADDRESS 0x52
+
 LiquidCrystal_I2C LCD(0x27, 16, 2); // Définit le type d'écran lcd 16x2
 
 const int IR1_PIN = A15;
@@ -17,6 +17,7 @@ float laserValue = 0;
 bool ir1Active = false;
 bool ir2Active = true;
 bool laserMeasuring = false;
+
 bool sendData = false;
 
 // Variables pour la mesure de distance
@@ -25,16 +26,21 @@ float currentDistance = 0;
 unsigned long previousTime = 0;
 const unsigned long delayTime = 400;
 
+bool switchOff = true;
+
 void setup()
 {
   Wire.begin();
   Serial.begin(9600);
   LCD.init();
   LCD.backlight();
+
   // Initialisation des broches des capteurs
   pinMode(IR1_PIN, INPUT);
   pinMode(IR2_PIN, INPUT);
-  pinMode(BoutonRes, INPUT);
+  pinMode(BoutonRes, INPUT_PULLUP);
+
+  attachInterrupt(digitalPinToInterrupt(BoutonRes), reset, RISING);
 }
 
 float checkDistance()
@@ -48,12 +54,27 @@ float checkDistance()
   return distance * 0.1;
 }
 
+void reset()
+{
+  switchOff = !switchOff;
+  Serial.println("INTERRUPT");
+}
+
 void loop()
 {
   // Lecture des valeurs des capteurs
   ir1Value = digitalRead(IR1_PIN);
   ir2Value = !digitalRead(IR2_PIN);
   laserValue = checkDistance();
+
+  if (switchOff)
+  {
+    LCD.noBacklight();
+  }
+  else
+  {
+    LCD.backlight();
+  }
 
   // Vérification des capteurs IR
   if (ir1Value == LOW && ir2Value == LOW)
@@ -74,44 +95,41 @@ void loop()
     {
       // Démarrer la mesure laser
       laserMeasuring = true;
+
       maxDistance = 0;
-      // previousTime = millis();
     }
     currentDistance = laserValue;
     maxDistance = max(maxDistance, currentDistance);
-
     sendData = true;
-  }
 
-  // Envoi des données
-  if (sendData)
-  {
-    if (millis() - previousTime >= 100)
+    // Envoi des données
+    if (sendData)
     {
+      if (millis() - previousTime >= 100)
+      {
+        LCD.setCursor(0, 0);
+        LCD.print("Detected");
+        LCD.setCursor(1, 0);
+        LCD.print("depth : ");
+        LCD.print(maxDistance - 5);
 
-      LCD.setCursor(0, 0);
-      LCD.print("Detected");
-      LCD.setCursor(1, 0);
-      LCD.print("depth : ");
-      LCD.print(maxDistance);
+        previousTime = millis();
+      }
 
-      previousTime = millis();
+      sendMessage(maxDistance);
+      maxDistance = 0;
+      sendData = false;
     }
-    sendMessage(maxDistance);
-    maxDistance = 0;
-    sendData = false;
-  }
-  else
-  {
-    if (millis() - previousTime >= 100)
+    else
     {
-
-      LCD.clear();
-      LCD.print("Not detected");
-
-      previousTime = millis();
+      if (millis() - previousTime >= 100)
+      {
+        LCD.clear();
+        LCD.print("Not detected");
+        previousTime = millis();
+      }
+      Serial.println("RESET");
     }
-    Serial.println("RESET");
   }
 }
 
