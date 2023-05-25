@@ -1,8 +1,10 @@
+// Importations of elements from the web page
 const badgeDatabase = document.getElementById("badge-database");
 const bodyPage = document.getElementsByClassName("container")[0];
 
 const btnShutdown = document.getElementById("btn-shutdown");
 
+// Check every seconds the connection to the database
 setInterval(() => {
   $.ajax({
     type: "GET",
@@ -22,6 +24,7 @@ setInterval(() => {
   });
 }, 1000);
 
+// Reboot the web server when clicked
 $(btnShutdown).click((e) => {
   console.log("REBOOT");
   $.ajax({

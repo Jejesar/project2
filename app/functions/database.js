@@ -17,7 +17,7 @@ db.connect((err) => {
   }
 });
 
-// Error bad (smiley crying)
+// Error bad (smiley crying 🥹)
 db.on("error", (err) => {
   console.error("Database error:", err);
 });

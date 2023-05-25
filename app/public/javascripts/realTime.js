@@ -1,9 +1,11 @@
+// Importations of elements from the web page
 const table = document.getElementById("table");
 const tableList = document.getElementById("table-list-measures");
 
 var rows = [];
 var newRows = [];
 
+// Get all the measures
 $.ajax({
   type: "get",
   url: "/api/get/measures",
@@ -12,6 +14,7 @@ $.ajax({
   },
 }).then(() => renderTable());
 
+// Check for new measures
 setInterval(() => {
   $.ajax({
     type: "get",
@@ -22,6 +25,7 @@ setInterval(() => {
   });
 }, 1000);
 
+// Render rows in the table for all the measures
 const addRows = () => {
   newRows.forEach((row) => {
     var currentRow = document.createElement("tr");

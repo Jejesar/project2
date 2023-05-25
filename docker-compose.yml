@@ -1,5 +1,6 @@
 version: "3.8"
 services:
+  # Node application with express server
   express:
     image: node
     working_dir: /home/node/app
@@ -9,16 +10,15 @@ services:
     ports:
       - 80:3000
     command: npm start
-    # command: npm run dev
     restart: always
     depends_on:
       - db
     devices:
       - /dev/ttyUSB0:/dev/ttyACM0
 
+  # MYSQL server
   db:
     image: hypriot/rpi-mysql
-    # image: mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=project2
@@ -28,6 +28,7 @@ services:
     ports:
       - 3306:3306
 
+  # MYSQL web management
   pma:
     image: phpmyadmin
     ports:

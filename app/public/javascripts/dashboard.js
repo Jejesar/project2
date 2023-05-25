@@ -1,3 +1,4 @@
+// Importations of elements from the web page
 const ctx = document.getElementById("myChart");
 
 const badgeDatabase = document.getElementById("badge-database");
@@ -12,6 +13,7 @@ const btnStartNew = document.getElementById("btn-start-new");
 const btnStartLast = document.getElementById("btn-start-last");
 const btnStop = document.getElementById("btn-stop");
 
+// Define the structure of the chart
 var data = {
   labels: [
     "Nbr of 0cm",
@@ -47,6 +49,7 @@ var data = {
   ],
 };
 
+// Create a new chart
 const myChart = new Chart(ctx, {
   type: "bar",
   data: data,
@@ -62,12 +65,14 @@ const myChart = new Chart(ctx, {
   },
 });
 
+// Check for new data in the database every seconds
 setInterval(() => {
   $.ajax({
     type: "GET",
     url: "/api/get",
     dataType: "JSON",
     success: (res) => {
+      // If sequence selected then update chart, else reset it
       if (res.dataSequence && res.dataSequence[0]) {
         data.datasets[0].data = [
           res.dataSequence[0].measure0,
@@ -83,6 +88,7 @@ setInterval(() => {
 
       myChart.update();
 
+      // If conneciton to db is good, update texts to say that
       if (res.dbConnection === true) {
         $(badgeDatabase).removeClass("bg-warning");
         $(badgeDatabase).removeClass("bg-danger");
@@ -94,6 +100,7 @@ setInterval(() => {
         $(badgeDatabase).text("Database disconnected");
       }
 
+      // If current sequence is define, update texts about that
       if (res.currentSequenceID) {
         $(txtCurrentSequence).text(res.currentSequenceID);
         $(btnStart).addClass("disabled");
@@ -114,6 +121,7 @@ setInterval(() => {
     },
   });
 
+  // Get the last sequence info and update texts about it
   $.ajax({
     type: "GET",
     url: "/api/get/last",
@@ -125,6 +133,7 @@ setInterval(() => {
   });
 }, 1000);
 
+// Event button start clicked => start new sequence
 $(btnStartNew).click((e) => {
   $.ajax({
     type: "POST",
@@ -132,6 +141,7 @@ $(btnStartNew).click((e) => {
   });
 });
 
+// Event button last sequence clicked => select last sequence
 $(btnStartLast).click((e) => {
   $.ajax({
     type: "POST",
@@ -139,6 +149,7 @@ $(btnStartLast).click((e) => {
   });
 });
 
+// Event button stop sequence => unselect current sequence
 $(btnStop).click((e) => {
   $.ajax({
     type: "POST",

@@ -1,3 +1,4 @@
+// Importations of elements from the web page
 const editForm = document.getElementById("edit-form");
 
 $(editForm).submit((e) => {
