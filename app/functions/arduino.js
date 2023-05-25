@@ -12,7 +12,6 @@ const parser = port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
 var oldArduinoData;
 var measured = 0;
 var measuredArray = [];
-var receivedTime;
 var measuredMax = 0;
 
 // Arduino sending data to Raspberry
@@ -25,32 +24,38 @@ parser.on("data", async (data) => {
     if (data.startsWith("Measure :")) {
       // Select only [value in cm]
       measured = Number(data.split(`"`)[1]);
+      console.log(data);
 
-      if (measuredArray.length == 0) receivedTime = new Date();
+      // Stock measures in an array and keep only the biggest in MAX
       measuredArray.push(measured);
       measuredMax = Math.max(measuredMax, measured);
     }
 
+    // No measure coming from the Arduino
     if (data == "RESET") {
+      // Select current sequence
       var [currentSequence] = await db.query(
         "SELECT idSequence FROM currentSequence"
       );
       currentSequence = currentSequence[0].idSequence;
 
+      // if else which choose the measured depth from the data
       var measuredType =
-        measuredMax >= 9.5
+        measuredMax > 9.5
           ? 5
-          : measuredMax >= 8.5
+          : measuredMax > 8.5
           ? 4
-          : measuredMax >= 7.5
+          : measuredMax > 7.5
           ? 3
-          : measuredMax >= 6.5
+          : measuredMax > 6.5
           ? 2
-          : measuredMax >= 5.5
+          : measuredMax > 5.5
           ? 1
           : 0;
 
+      // Check if we got measures and if a sequence is selected
       if (currentSequence && measuredArray.length > 0) {
+        // Add measure to the sequence list database
         db.query(
           `UPDATE listSequences
             JOIN (SELECT MAX(idSequence) AS maxID FROM listSequences) AS list2
@@ -59,6 +64,7 @@ parser.on("data", async (data) => {
           [Number(measuredType), Number(measuredType)]
         );
 
+        // Add measure to the measure database history
         db.query(
           `INSERT INTO measures (idSequence, typeOf)
           VALUES
@@ -66,6 +72,7 @@ parser.on("data", async (data) => {
           [currentSequence, measuredType]
         );
       } else if (measuredArray.length > 0) {
+        // Add measure to the measure database history whithout current sequence
         db.query(
           `INSERT INTO measures (typeOf)
             VALUES
@@ -74,6 +81,12 @@ parser.on("data", async (data) => {
         );
       }
 
+      // Log the data for debugging
+      console.log(
+        `Sequence ${currentSequence}, Mesure ${measuredType}, Max ${measuredMax}`
+      );
+
+      // Reset the array of measures received
       measuredArray = [];
       measuredMax = 0;
     }

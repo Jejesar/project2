@@ -69,12 +69,14 @@ setInterval(() => {
     dataType: "JSON",
     success: (res) => {
       if (res.dataSequence && res.dataSequence[0]) {
-        data.datasets[0].data[0] = res.dataSequence[0].measure0;
-        data.datasets[0].data[1] = res.dataSequence[0].measure1;
-        data.datasets[0].data[2] = res.dataSequence[0].measure2;
-        data.datasets[0].data[3] = res.dataSequence[0].measure3;
-        data.datasets[0].data[4] = res.dataSequence[0].measure4;
-        data.datasets[0].data[5] = res.dataSequence[0].measure5;
+        data.datasets[0].data = [
+          res.dataSequence[0].measure0,
+          res.dataSequence[0].measure1,
+          res.dataSequence[0].measure2,
+          res.dataSequence[0].measure3,
+          res.dataSequence[0].measure4,
+          res.dataSequence[0].measure5,
+        ];
       } else {
         data.datasets[0].data = [0, 0, 0, 0, 0, 0];
       }
