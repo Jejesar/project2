@@ -2,7 +2,7 @@
 #include "LiquidCrystal_I2C.h"
 #define TOF10120_ADDRESS 0x52
 
-LiquidCrystal_I2C LCD(0x27, 16, 2); // Définit le type d'écran lcd 16x2
+LiquidCrystal_I2C LCD(0x27, 16, 2);
 
 // Sensors' PINS
 const int IR1_PIN = A15;
