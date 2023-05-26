@@ -34,8 +34,8 @@ router.get("/edit/:id", async (req, res, next) => {
 });
 
 // All measures page
-router.get("/real-time", async (req, res, next) => {
-  res.render("realTime", { title: "Real time measures | Project 2" });
+router.get("/measures", async (req, res, next) => {
+  res.render("measures", { title: "Real time measures | Project 2" });
 });
 
 module.exports = router;

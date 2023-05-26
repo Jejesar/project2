@@ -25,7 +25,7 @@ var data = {
   ],
   datasets: [
     {
-      label: "Number of blocks per depth",
+      label: "Number of bricks per depth",
       data: [0, 0, 0, 0, 0, 0],
       backgroundColor: [
         "rgba(255, 118, 117, 0.3)",
