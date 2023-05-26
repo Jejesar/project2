@@ -26,6 +26,7 @@ float maxDistance = 0;
 float currentDistance = 0;
 unsigned long previousTime = 0;
 const unsigned long delayTime = 400;
+unsigned long measurementTime = 0;
 
 bool switchOff = true;
 
@@ -44,7 +45,7 @@ void setup()
   LCD.init();
   LCD.backlight();
 
-  // PINS init
+  // PINS initiation
   pinMode(IR1_PIN, INPUT);
   pinMode(IR2_PIN, INPUT);
   pinMode(BoutonRes, INPUT_PULLUP);
@@ -135,6 +136,7 @@ void loop()
       // Data => Raspberry
       sendMessage(maxDistance);
       maxDistance = 0;
+      measurementTime = millis();
       sendData = false;
     }
   }
@@ -143,8 +145,11 @@ void loop()
     // RESET msg for Raspberry
     Serial.println("RESET");
     // LCD text
-    line1 = "Not detected";
-    line2 = "";
+    if (millis() - measurementTime >= 3000)
+    {
+      line1 = "Not detected";
+      line2 = "";
+    }
   }
   // Write defined LCD text
   writeLCD();
