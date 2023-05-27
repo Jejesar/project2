@@ -1,23 +1,6 @@
-// const mysql = require("mysql2");
-// var db;
-
-// try {
-//   db = mysql
-//     .createConnection({
-//       host: "localhost",
-//       user: "root",
-//       password: "password",
-//       database: "project2",
-//     })
-//     .promise();
-// } catch (error) {
-//   console.error("Database connection error");
-// }
-
-// module.exports = db;
-
 const mysql = require("mysql2");
 
+// Link to the database
 const db = mysql.createConnection({
   host: "db",
   user: "root",
@@ -25,6 +8,7 @@ const db = mysql.createConnection({
   database: "project2",
 });
 
+// Connect to the database
 db.connect((err) => {
   if (err) {
     console.error("Error connecting to database:", err);
@@ -33,8 +17,10 @@ db.connect((err) => {
   }
 });
 
+// Error bad (smiley crying 🥹)
 db.on("error", (err) => {
   console.error("Database error:", err);
 });
 
+// Export the const "db" to use it in the APIu;
 module.exports = db.promise();

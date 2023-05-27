@@ -1,21 +1,22 @@
 version: "3.8"
 services:
+  # Node application with express server
   express:
-    #image: balenalib/raspberry-pi-alpine-node:18.11.0-3.15
     image: node
     working_dir: /home/node/app
     volumes:
       - ./app:/home/node/app
     privileged: true
     ports:
-      - 3000:3000
-    command: npm run dev
+      - 80:3000
+    command: npm start
     restart: always
     depends_on:
       - db
-    # devices:
-    #   - /dev/ttyACM0:/dev/ttyACM0
+    devices:
+      - /dev/ttyUSB0:/dev/ttyACM0
 
+  # MYSQL server
   db:
     image: hypriot/rpi-mysql
     environment:
@@ -27,6 +28,7 @@ services:
     ports:
       - 3306:3306
 
+  # MYSQL web management
   pma:
     image: phpmyadmin
     ports:

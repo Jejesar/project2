@@ -1,3 +1,4 @@
+// Importations of elements from the web page
 const ctx = document.getElementById("myChart");
 
 const badgeDatabase = document.getElementById("badge-database");
@@ -12,6 +13,7 @@ const btnStartNew = document.getElementById("btn-start-new");
 const btnStartLast = document.getElementById("btn-start-last");
 const btnStop = document.getElementById("btn-stop");
 
+// Define the structure of the chart
 var data = {
   labels: [
     "Nbr of 0cm",
@@ -23,25 +25,23 @@ var data = {
   ],
   datasets: [
     {
-      label: "Number of blocks per depth",
+      label: "Number of bricks per depth",
       data: [0, 0, 0, 0, 0, 0],
       backgroundColor: [
-        "rgba(255, 118, 117,0.2)",
-        "rgba(250, 177, 160,0.2)",
-        // "rgba(255, 234, 167,0.2)",
-        "rgba(85, 239, 196,0.2)",
-        "rgba(129, 236, 236,0.2)",
-        "rgba(116, 185, 255,0.2)",
-        "rgba(162, 155, 254,0.2)",
+        "rgba(255, 118, 117, 0.3)",
+        "rgba(250, 177, 160, 0.3)",
+        "rgba(85, 239, 196, 0.3)",
+        "rgba(129, 236, 236, 0.3)",
+        "rgba(116, 185, 255, 0.3)",
+        "rgba(162, 155, 254, 0.3)",
       ],
       borderColor: [
-        "rgba(255, 118, 117,1.0)",
-        "rgba(250, 177, 160,1.0)",
-        // "rgba(255, 234, 167,1.0)",
-        "rgba(85, 239, 196,1.0)",
-        "rgba(129, 236, 236,1.0)",
-        "rgba(116, 185, 255,1.0)",
-        "rgba(162, 155, 254,1.0)",
+        "rgba(255, 118, 117, 1.0)",
+        "rgba(250, 177, 160, 1.0)",
+        "rgba(85, 239, 196, 1.0)",
+        "rgba(129, 236, 236, 1.0)",
+        "rgba(116, 185, 255, 1.0)",
+        "rgba(162, 155, 254, 1.0)",
       ],
       borderWidth: 2,
       borderRadius: 10,
@@ -49,6 +49,7 @@ var data = {
   ],
 };
 
+// Create a new chart
 const myChart = new Chart(ctx, {
   type: "bar",
   data: data,
@@ -64,56 +65,30 @@ const myChart = new Chart(ctx, {
   },
 });
 
-setInterval(() => {
-  //   checkSequence();
-  //   randomSequence();
-  myChart.update();
-}, 1000);
-
-const randomSequence = () => {
-  var random = [];
-
-  for (let i = 0; i < 7; i++) {
-    random[i] = Math.floor(Math.random() * 10);
-  }
-
-  data.datasets[0].data = [...random];
-};
-
-// const uploadRandom = (random) => {
-//   console.log(data.datasets[0].data);
-
-//   let info = [];
-//   info[0] = data.datasets[0].data[0];
-
-//   $.ajax({
-//     type: "post",
-//     url: "/api/edit/2",
-//     data: { test: "test", info: info },
-//     dataType: "JSON",
-//     success: (res) => {},
-//   });
-// };
-
+// Check for new data in the database every seconds
 setInterval(() => {
   $.ajax({
     type: "GET",
     url: "/api/get",
     dataType: "JSON",
     success: (res) => {
+      // If sequence selected then update chart, else reset it
       if (res.dataSequence && res.dataSequence[0]) {
-        data.datasets[0].data[0] = res.dataSequence[0].measure0;
-        data.datasets[0].data[1] = res.dataSequence[0].measure1;
-        data.datasets[0].data[2] = res.dataSequence[0].measure2;
-        data.datasets[0].data[3] = res.dataSequence[0].measure3;
-        data.datasets[0].data[4] = res.dataSequence[0].measure4;
-        data.datasets[0].data[5] = res.dataSequence[0].measure5;
+        data.datasets[0].data = [
+          res.dataSequence[0].measure0,
+          res.dataSequence[0].measure1,
+          res.dataSequence[0].measure2,
+          res.dataSequence[0].measure3,
+          res.dataSequence[0].measure4,
+          res.dataSequence[0].measure5,
+        ];
       } else {
         data.datasets[0].data = [0, 0, 0, 0, 0, 0];
       }
 
       myChart.update();
 
+      // If conneciton to db is good, update texts to say that
       if (res.dbConnection === true) {
         $(badgeDatabase).removeClass("bg-warning");
         $(badgeDatabase).removeClass("bg-danger");
@@ -125,6 +100,7 @@ setInterval(() => {
         $(badgeDatabase).text("Database disconnected");
       }
 
+      // If current sequence is define, update texts about that
       if (res.currentSequenceID) {
         $(txtCurrentSequence).text(res.currentSequenceID);
         $(btnStart).addClass("disabled");
@@ -132,7 +108,7 @@ setInterval(() => {
         $(divLastSequence).removeAttr("hidden");
         $(badgeWaiting).addClass("bg-success");
         $(badgeWaiting).removeClass("bg-warning");
-        $(badgeWaiting).text("Sequence ready!");
+        $(badgeWaiting).text("Sequence ready");
       } else if (!res.currentSequenceID && res.dbConnection === true) {
         $(txtCurrentSequence).text("...");
         $(btnStart).removeClass("disabled");
@@ -145,6 +121,7 @@ setInterval(() => {
     },
   });
 
+  // Get the last sequence info and update texts about it
   $.ajax({
     type: "GET",
     url: "/api/get/last",
@@ -156,6 +133,7 @@ setInterval(() => {
   });
 }, 1000);
 
+// Event button start clicked => start new sequence
 $(btnStartNew).click((e) => {
   $.ajax({
     type: "POST",
@@ -163,6 +141,7 @@ $(btnStartNew).click((e) => {
   });
 });
 
+// Event button last sequence clicked => select last sequence
 $(btnStartLast).click((e) => {
   $.ajax({
     type: "POST",
@@ -170,6 +149,7 @@ $(btnStartLast).click((e) => {
   });
 });
 
+// Event button stop sequence => unselect current sequence
 $(btnStop).click((e) => {
   $.ajax({
     type: "POST",

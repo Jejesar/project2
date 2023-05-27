@@ -1,60 +1,14 @@
 var express = require("express");
 var router = express.Router();
 
-// ARDUINO LINK DATA
-const { SerialPort } = require("serialport");
-const { ReadlineParser } = require("@serialport/parser-readline");
-// const port = new SerialPort({ path: "/dev/ttyACM0", baudRate: 9600 });
+// Arduino data reader
+const arduino = require("../functions/arduino");
 
-// const parser = port.pipe(new ReadlineParser({ delimiter: "\r\n" }));
-
-// var oldArduinoData;
-// var measuredType;
-// parser.on("data", async (data) => {
-//   if (oldArduinoData != data) {
-//     oldArduinoData = data;
-
-//     if (data.toLowerCase().startsWith("measure")) {
-//       // Message expected : `Measure : "[value]"`
-
-//       measuredType = data.split(`"`)[1];
-
-//       var [currentSequence] = await db.query(
-//         "SELECT idSequence FROM currentSequence"
-//       );
-
-//       if (currentSequence[0].idSequence) {
-//         db.query(
-//           `UPDATE listSequences
-//           JOIN (SELECT MAX(idSequence) AS maxID FROM listSequences) AS list2
-//           ON idSequence = list2.maxID
-//           SET measure? = measure? + 1`,
-//           [Number(measuredType), Number(measuredType)]
-//         );
-//       }
-
-//       console.log(
-//         "Current sequence : " +
-//           currentSequence[0].idSequence +
-//           "\tType : " +
-//           measuredType
-//       );
-//     } else if (data.toLowerCase().startsWith("reset")) {
-//       // Message expected : `RESET`
-
-//       measuredType = null;
-//     }
-//   }
-// });
-
-// DATABASE LINK
+// Link to the database
 const db = require("../functions/database");
 var dbConnection = false;
 
-router.get("", async (req, res, next) => {
-  res.json("API is working");
-});
-
+// Send the current sequence (null or defined) + check the database connection
 router.get("/get", async (req, res, next) => {
   var currentSequenceID, dataSequence;
 
@@ -95,6 +49,7 @@ router.get("/get", async (req, res, next) => {
   });
 });
 
+// Send all the sequences
 router.get("/get/all", async (req, res, next) => {
   try {
     var [allSequences] = await db.query("SELECT * FROM listSequences");
@@ -105,6 +60,7 @@ router.get("/get/all", async (req, res, next) => {
   res.json(allSequences);
 });
 
+// Send the last sequence played
 router.get("/get/last", async (req, res, next) => {
   try {
     var [lastSequence] = await db.query(
@@ -117,6 +73,17 @@ router.get("/get/last", async (req, res, next) => {
   }
 });
 
+// Send all the measures
+router.get("/get/measures", async (req, res, next) => {
+  try {
+    var [measures] = await db.query("SELECT * FROM measures");
+  } catch (error) {
+    return res.status(500).json({ error: error });
+  }
+  res.json(measures);
+});
+
+// Send a specific sequence
 router.get("/get/:id", async (req, res, next) => {
   var [selectedSequences] = await db.query(
     "SELECT * FROM listSequences JOIN currentSequence ON currentSequence.idSequence = listSequences.idSequence WHERE listSequences.idSequence = ?",
@@ -125,11 +92,11 @@ router.get("/get/:id", async (req, res, next) => {
   res.json(selectedSequences[0]);
 });
 
+// Create a new sequence in the database
 router.post("/create", async (req, res, next) => {
   await db
     .query("INSERT INTO listSequences (name, comment) VALUES (NULL, NULL)")
     .then(async ([result]) => {
-      console.log(result.insertId);
       await db.query(
         "UPDATE currentSequence SET idSequence=?",
         result.insertId
@@ -138,9 +105,9 @@ router.post("/create", async (req, res, next) => {
   res.json("OK");
 });
 
+// Edit the name and comment of a sequence
 router.post("/edit/:id", async (req, res, next) => {
   var { sequenceName, sequenceComment } = req.body;
-  console.log(sequenceName, sequenceComment);
 
   try {
     var [editedSequence] = await db.query(
@@ -154,6 +121,7 @@ router.post("/edit/:id", async (req, res, next) => {
   res.json("OK");
 });
 
+// Add a measure to a sequence
 router.post("/insert/:type", async (req, res, next) => {
   var measure = req.params.type;
   var [currentSequence] = await db.query(
@@ -172,6 +140,7 @@ router.post("/insert/:type", async (req, res, next) => {
   }
 });
 
+// Select the last sequence and insert it into the current sequence
 router.post("/select/last", async (req, res, next) => {
   await db.query(
     "UPDATE currentSequence SET idSequence=(SELECT MAX(idSequence) FROM listSequences);"
@@ -179,16 +148,19 @@ router.post("/select/last", async (req, res, next) => {
   res.json("OK");
 });
 
+// Unselect the current sequence
 router.post("/stop", async (req, res, next) => {
   await db.query(`UPDATE currentSequence SET idSequence=NULL;`);
   res.json("OK");
 });
 
+// Delete a specific sequence
 router.delete("/delete/:id", async (req, res, next) => {
   await db.query(`DELETE FROM listSequences WHERE idSequence=?`, req.params.id);
   res.json("OK");
 });
 
+// Reboot the web server
 router.post("/shutdown", async (req, res, next) => {
   process.exit(0);
 });
