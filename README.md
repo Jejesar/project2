@@ -33,7 +33,6 @@ Each group had a different characteristic to measure and display on a website as
 *Simple yet flexible JavaScript charting library for the modern web*
 
 ## Live demo
-Video demo
-VIDEO HERE
+Video demo : *[link](https://youtu.be/82znBX74o-4)*
 
 Website demo : *[link](https://project2.jejesar.be/)*
